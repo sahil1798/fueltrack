@@ -1447,7 +1447,7 @@ function installPWA() {
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
-  navigateTo('dashboard');
+  // navigateTo('dashboard'); <-- Removed to prevent auto-loading before Auth
 
   // Register service worker
   if ('serviceWorker' in navigator) {

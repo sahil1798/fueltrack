@@ -449,7 +449,7 @@ const EXERCISE_DATABASE = [
 ];
 
 // ── Default Profile ──
-const DEFAULT_PROFILE = { name: "Sahil", age: 21, height: 167, weight: 67, gender: "male", activityLevel: 1.65, goal: "cut" };
+const DEFAULT_PROFILE = { name: "", age: null, height: null, weight: null, gender: "male", activityLevel: 1.2, goal: "" };
 
 function calcTargets(profile) {
   const bmr = profile.gender === "male"

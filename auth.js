@@ -73,6 +73,8 @@ async function checkUserRegistration(user) {
     // User already registered — go to dashboard
     hideAuth();
     loadUserData(user.uid);
+    // Explicitly navigate now that we are ready
+    if (window.navigateTo) window.navigateTo('dashboard');
   } else {
     // New user — show profile setup stage
     switchStage('loginStage', 'profileStage');
