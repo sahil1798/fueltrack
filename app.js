@@ -927,7 +927,7 @@ function renderProfilePage(container) {
         </div>
         <div class="form-group">
           <label class="form-label">Name</label>
-          <input class="form-input" id="profName" value="${p.name}">
+          <input class="form-input" id="profName" value="${p.name || p.displayName || ''}">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md)">
           <div class="form-group">

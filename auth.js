@@ -174,7 +174,7 @@ window.completeRegistration = async function() {
     const profile = {
       uid,
       username,
-      displayName: document.getElementById('regDisplayName').value.trim(),
+      name: document.getElementById('regDisplayName').value.trim(),
       age: parseInt(document.getElementById('regAge').value),
       gender: document.getElementById('regGender').value,
       height: parseFloat(document.getElementById('regHeight').value),
@@ -199,7 +199,7 @@ window.completeRegistration = async function() {
 
     await setDoc(doc(db, "users", uid), cloudData);
     
-    alert("Onboarding complete! Welcome, " + profile.displayName);
+    alert("Onboarding complete! Welcome, " + profile.name);
     hideAuth();
     loadUserData(uid);
     if (window.navigateTo) window.navigateTo('dashboard');
@@ -246,13 +246,13 @@ async function loadUserData(uid) {
 
 function updateProfileUI(profile) {
   const profileName = document.getElementById('profileName');
-  if (profileName) profileName.textContent = profile.displayName || "User";
+  if (profileName) profileName.textContent = profile.name || "User";
   const profileSub = document.querySelector('.profile-subtitle');
   if (profileSub) profileSub.textContent = "@" + profile.username;
   
   // Also update sidebar footer
   const sbName = document.getElementById('sidebarUserName');
-  if (sbName) sbName.textContent = profile.displayName;
+  if (sbName) sbName.textContent = profile.name;
   const sbGoal = document.querySelector('.sidebar-user-goal');
   if (sbGoal) sbGoal.textContent = `${profile.goal.toUpperCase()} · ${profile.gender === 'male' ? 'KINGS' : 'QUEENS'} MODE`;
 }
