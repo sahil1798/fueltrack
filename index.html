@@ -213,85 +213,73 @@
     </div>
   </div>
 
-  <!-- Auth Overlay -->
-  <div class="modal-overlay active" id="authOverlay">
-    <div class="modal auth-modal">
-      <div class="auth-liquid-bg"></div>
-      
-      <!-- Stage 1: Phone -->
-      <div id="phoneStage" class="auth-stage active">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+    }
+    body { font-family: var(--font-main); }
+  </style>
+
+  <!-- Auth Overlay (Aurora 2.0) -->
+  <div class="auth-wrapper active" id="authOverlay">
+    <div class="aurora-container">
+      <div class="aurora-blob a-1"></div>
+      <div class="aurora-blob a-2"></div>
+      <div class="aurora-blob a-3"></div>
+    </div>
+
+    <div class="auth-content">
+      <div id="loginStage" class="auth-card active">
         <div class="auth-header">
-          <div class="auth-logo">🔥</div>
-          <h2 class="auth-title">FuelTrack</h2>
-          <p class="auth-subtitle">Elevate your fitness journey</p>
-        </div>
-        
-        <div class="auth-body">
-          <label class="input-label">REGISTERED MOBILE NUMBER</label>
-          <div class="tel-input-wrapper">
-            <input type="tel" id="loginPhone" class="input-field">
-          </div>
-          <p class="auth-info-text">We'll send a secure 6-digit code to verify your account.</p>
+          <div class="auth-logo-float">🔥</div>
+          <h1 class="auth-title">FuelTrack</h1>
+          <p class="auth-tagline">Your personal fitness cloud</p>
         </div>
 
-        <div class="auth-footer">
-          <button class="btn btn-primary btn-auth" onclick="sendOTP()">
-            <span>Send Verification Code</span>
-            <i class="fas fa-arrow-right"></i>
+        <div class="auth-actions">
+          <button class="btn-social google" onclick="loginWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/btn_google_light_normal.svg" alt="Google">
+            <span>Continue with Google</span>
           </button>
-        </div>
-      </div>
+          
+          <div class="auth-divider">
+            <span>or email</span>
+          </div>
 
-      <!-- Stage 2: OTP -->
-      <div id="otpStage" class="auth-stage">
-        <div class="auth-header">
-          <div class="auth-logo">✉️</div>
-          <h2 class="auth-title">Verify Code</h2>
-          <p class="auth-subtitle">Enter the digits sent to your phone</p>
-        </div>
-
-        <div class="auth-body">
-          <div class="otp-input-container">
-            <input type="text" id="loginOTP" class="input-field otp-input" placeholder="000 000" maxlength="6">
+          <div class="email-login-form">
+            <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+            <input type="password" id="loginPass" class="auth-input" placeholder="Password">
+            <button class="btn-primary auth-submit" onclick="loginWithEmail()">Sign In / Sign Up</button>
           </div>
         </div>
 
-        <div class="auth-footer">
-          <button class="btn btn-primary btn-auth" onclick="verifyOTP()">Verify & Continue</button>
-          <button class="btn-text" onclick="location.reload()" style="margin-top: var(--space-md); width: 100%; font-size: 0.8rem; opacity: 0.6">Change Phone Number</button>
-        </div>
+        <p class="auth-footer-text">Secure cloud sync for your health data.</p>
       </div>
 
-      <!-- Stage 3: Profile Setup -->
-      <div id="profileStage" class="auth-stage">
+      <!-- Registration Stage (Handle & Name) -->
+      <div id="profileStage" class="auth-card">
         <div class="auth-header">
-          <div class="auth-logo">🧬</div>
-          <h2 class="auth-title">Your Identity</h2>
-          <p class="auth-subtitle">Claim your spot in the FuelTrack community</p>
+          <div class="auth-logo-float">🧬</div>
+          <h2 class="auth-title">Identify Yourself</h2>
+          <p class="auth-tagline">Claim your unique FuelTrack handle</p>
         </div>
 
         <div class="auth-body">
-          <label class="input-label">CHOOSE A HANDLE</label>
-          <div class="handle-input-wrapper">
-            <span class="handle-prefix">@</span>
-            <input type="text" id="regUsername" class="input-field" placeholder="username" maxlength="20">
+          <div class="handle-input-container">
+            <span class="handle-at">@</span>
+            <input type="text" id="regUsername" class="auth-input handle-field" placeholder="username" maxlength="20">
           </div>
-
-          <label class="input-label" style="margin-top: var(--space-lg)">DISPLAY NAME</label>
-          <input type="text" id="regDisplayName" class="input-field" placeholder="How should we call you?">
+          <input type="text" id="regDisplayName" class="auth-input" placeholder="Display Name">
         </div>
 
-        <div class="auth-footer">
-          <button class="btn btn-primary btn-auth" onclick="completeRegistration()">Finalize Registration 🔥</button>
+        <div class="auth-actions" style="margin-top: 2rem">
+          <button class="btn-primary auth-submit" onclick="completeRegistration()">Start Building 🔥</button>
         </div>
       </div>
-
-      <div id="recaptcha-container"></div>
     </div>
   </div>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/css/intlTelInput.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/intlTelInput.min.js"></script>
 
   <!-- Scripts -->
   <script src="data.js"></script>
