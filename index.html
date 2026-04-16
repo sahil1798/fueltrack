@@ -215,52 +215,83 @@
 
   <!-- Auth Overlay -->
   <div class="modal-overlay active" id="authOverlay">
-    <div class="modal" style="max-width:400px; padding: var(--space-xl)">
-      <div class="modal-header" style="justify-content: center; margin-bottom: var(--space-xl)">
-        <div style="text-align: center">
-          <div style="font-size: 3rem; margin-bottom: var(--space-sm)">🔥</div>
-          <h2 class="modal-title" style="font-size: 1.8rem">Welcome to FuelTrack</h2>
-          <p style="color: var(--text-muted); font-size: 0.9rem">Cloud Sync & Personal Locker</p>
-        </div>
-      </div>
-
+    <div class="modal auth-modal">
+      <div class="auth-liquid-bg"></div>
+      
       <!-- Stage 1: Phone -->
-      <div id="phoneStage">
-        <label class="input-label">Enter Mobile Number</label>
-        <div style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg)">
-          <input type="tel" id="loginPhone" class="input-field" placeholder="+91 9876543210" style="font-size: 1.1rem; letter-spacing: 1px">
+      <div id="phoneStage" class="auth-stage active">
+        <div class="auth-header">
+          <div class="auth-logo">🔥</div>
+          <h2 class="auth-title">FuelTrack</h2>
+          <p class="auth-subtitle">Elevate your fitness journey</p>
         </div>
-        <button class="btn btn-primary" style="width: 100%; padding: var(--space-md)" onclick="sendOTP()">Send OTP</button>
+        
+        <div class="auth-body">
+          <label class="input-label">REGISTERED MOBILE NUMBER</label>
+          <div class="tel-input-wrapper">
+            <input type="tel" id="loginPhone" class="input-field">
+          </div>
+          <p class="auth-info-text">We'll send a secure 6-digit code to verify your account.</p>
+        </div>
+
+        <div class="auth-footer">
+          <button class="btn btn-primary btn-auth" onclick="sendOTP()">
+            <span>Send Verification Code</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Stage 2: OTP -->
-      <div id="otpStage" class="hidden">
-        <label class="input-label">Enter 6-Digit OTP</label>
-        <input type="text" id="loginOTP" class="input-field" placeholder="123456" maxlength="6" style="text-align: center; font-size: 1.5rem; letter-spacing: 6px; margin-bottom: var(--space-lg)">
-        <button class="btn btn-primary" style="width: 100%; padding: var(--space-md)" onclick="verifyOTP()">Verify OTP</button>
-        <p style="text-align: center; margin-top: var(--space-md); font-size: 0.8rem; color: var(--text-muted)">We've sent a code to your phone</p>
-      </div>
-
-      <!-- Stage 3: Profile Setup (New User) -->
-      <div id="profileStage" class="hidden">
-        <h3 style="margin-bottom: var(--space-md); color: var(--accent-green)">Complete Your Profile</h3>
-        <p style="margin-bottom: var(--space-lg); font-size: 0.85rem; color: var(--text-muted)">Choose a unique handle and how you want to be called.</p>
-        
-        <label class="input-label">Username (Unique handle)</label>
-        <div style="position: relative; margin-bottom: var(--space-md)">
-          <span style="position: absolute; left: 12px; top: 12px; color: var(--text-muted)">@</span>
-          <input type="text" id="regUsername" class="input-field" placeholder="sahil_fit" style="padding-left: 30px" maxlength="20">
+      <div id="otpStage" class="auth-stage">
+        <div class="auth-header">
+          <div class="auth-logo">✉️</div>
+          <h2 class="auth-title">Verify Code</h2>
+          <p class="auth-subtitle">Enter the digits sent to your phone</p>
         </div>
 
-        <label class="input-label">Display Name</label>
-        <input type="text" id="regDisplayName" class="input-field" placeholder="Sahil" style="margin-bottom: var(--space-xl)">
-        
-        <button class="btn btn-primary" style="width: 100%; padding: var(--space-md)" onclick="completeRegistration()">Start Training 🔥</button>
+        <div class="auth-body">
+          <div class="otp-input-container">
+            <input type="text" id="loginOTP" class="input-field otp-input" placeholder="000 000" maxlength="6">
+          </div>
+        </div>
+
+        <div class="auth-footer">
+          <button class="btn btn-primary btn-auth" onclick="verifyOTP()">Verify & Continue</button>
+          <button class="btn-text" onclick="location.reload()" style="margin-top: var(--space-md); width: 100%; font-size: 0.8rem; opacity: 0.6">Change Phone Number</button>
+        </div>
+      </div>
+
+      <!-- Stage 3: Profile Setup -->
+      <div id="profileStage" class="auth-stage">
+        <div class="auth-header">
+          <div class="auth-logo">🧬</div>
+          <h2 class="auth-title">Your Identity</h2>
+          <p class="auth-subtitle">Claim your spot in the FuelTrack community</p>
+        </div>
+
+        <div class="auth-body">
+          <label class="input-label">CHOOSE A HANDLE</label>
+          <div class="handle-input-wrapper">
+            <span class="handle-prefix">@</span>
+            <input type="text" id="regUsername" class="input-field" placeholder="username" maxlength="20">
+          </div>
+
+          <label class="input-label" style="margin-top: var(--space-lg)">DISPLAY NAME</label>
+          <input type="text" id="regDisplayName" class="input-field" placeholder="How should we call you?">
+        </div>
+
+        <div class="auth-footer">
+          <button class="btn btn-primary btn-auth" onclick="completeRegistration()">Finalize Registration 🔥</button>
+        </div>
       </div>
 
       <div id="recaptcha-container"></div>
     </div>
   </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/css/intlTelInput.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/intlTelInput.min.js"></script>
 
   <!-- Scripts -->
   <script src="data.js"></script>

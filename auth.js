@@ -12,6 +12,7 @@ const db = getFirestore(app);
 // State
 let confirmationResult = null;
 let currentUser = null;
+let iti = null;
 
 // ── Auth UI Elements ──
 // These will be added to index.html
@@ -30,17 +31,16 @@ async function initRecaptcha() {
 }
 
 window.sendOTP = async function() {
-  const phoneInput = document.getElementById('loginPhone');
-  const phoneNumber = phoneInput.value.trim();
-  if (!phoneNumber) return alert("Please enter a phone number");
+  if (!iti) return;
+  const phoneNumber = iti.getNumber();
+  if (!iti.isValidNumber()) return alert("Please enter a valid phone number");
 
   try {
     await initRecaptcha();
     const appVerifier = window.recaptchaVerifier;
     confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
     
-    document.getElementById('phoneStage').classList.add('hidden');
-    document.getElementById('otpStage').classList.remove('hidden');
+    switchStage('phoneStage', 'otpStage');
     alert("OTP sent to " + phoneNumber);
   } catch (error) {
     console.error("OTP send failed:", error);
@@ -78,8 +78,7 @@ async function checkUserRegistration(user) {
     loadUserData(user.uid);
   } else {
     // New user — show profile setup
-    document.getElementById('otpStage').classList.add('hidden');
-    document.getElementById('profileStage').classList.remove('hidden');
+    switchStage('otpStage', 'profileStage');
   }
 }
 
@@ -133,6 +132,11 @@ window.completeRegistration = async function() {
     alert("Error completing registration: " + error.message);
   }
 };
+
+function switchStage(fromId, toId) {
+  document.getElementById(fromId).classList.remove('active');
+  document.getElementById(toId).classList.add('active');
+}
 
 function hideAuth() {
   document.getElementById('authOverlay').classList.remove('active');
@@ -194,5 +198,17 @@ onAuthStateChanged(auth, (user) => {
     currentUser = null;
     document.getElementById('authOverlay').classList.add('active');
     document.body.classList.remove('is-authenticated');
+  }
+});
+
+// ── Initialize International Phone Input ──
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.querySelector("#loginPhone");
+  if (input) {
+    iti = window.intlTelInput(input, {
+      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/utils.js",
+      separateDialCode: true,
+      preferredCountries: ["in", "us", "gb"]
+    });
   }
 });
