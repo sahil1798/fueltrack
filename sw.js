@@ -2,15 +2,19 @@
 // FuelTrack — Service Worker (Offline Support)
 // ============================================
 
-const CACHE_NAME = 'fueltrack-v2';
+const CACHE_NAME = 'fueltrack-v3';
 const ASSETS = [
-  './',
-  './index.html',
-  './style.css',
-  './app.js',
-  './data.js',
-  './charts.js',
-  './manifest.json',
+  '/',
+  '/index.html',
+  '/style.css',
+  '/app.js',
+  '/data.js',
+  '/charts.js',
+  '/auth.js',
+  '/firebase-config.js',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
 
 // Install — cache core assets

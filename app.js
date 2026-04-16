@@ -60,6 +60,11 @@ function saveState() {
     daySplits: APP.daySplits || {},
   };
   localStorage.setItem('nutritionTracker', JSON.stringify(data));
+  
+  // Cloud Sync if authenticated
+  if (window.syncToCloud) {
+    window.syncToCloud(data);
+  }
 }
 
 function loadState() {
@@ -79,7 +84,11 @@ function loadState() {
   } else {
     initDefaults();
   }
-  APP.targets = calcTargets(APP.profile);
+  
+  // Recalculate targets based on profile
+  if (APP.profile) {
+    APP.targets = calcTargets(APP.profile);
+  }
 }
 
 function initDefaults() {

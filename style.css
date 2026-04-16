@@ -1845,27 +1845,50 @@ body {
   }
 }
 
-/* ── Touch Optimizations ── */
-@media (hover: none) and (pointer: coarse) {
-  .meal-item-delete {
-    opacity: 1;
-  }
-
-  .food-result-item {
-    padding: var(--space-md);
-  }
-
-  .category-chip {
-    padding: 6px 14px;
-  }
-
-  .btn {
-    padding: var(--space-md) var(--space-lg);
-    min-height: 44px;
-  }
-
-  .qty-btn {
-    width: 40px;
-    height: 40px;
-  }
+/* ── Authentication & Identity ── */
+.hidden {
+  display: none !important;
 }
+
+#authOverlay {
+  backdrop-filter: blur(20px);
+  background: rgba(10, 10, 12, 0.95);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#authOverlay .modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  animation: modalIn 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+#regUsername:focus {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 1px var(--accent-green);
+}
+
+.profile-logout-btn {
+  margin-top: var(--space-xl);
+  color: #ff4757;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: rgba(255, 71, 87, 0.05);
+  transition: all var(--transition-base);
+}
+
+.profile-logout-btn:active {
+  background: rgba(255, 71, 87, 0.1);
+  transform: scale(0.98);
+}
+
