@@ -1,0 +1,476 @@
+// ============================================
+// FUELTRACK — Complete Database v2
+// Food (200+ items) + Exercises (100+)
+// servingGrams: grams per 1 serving (for custom weight entry)
+// ============================================
+
+const FOOD_DATABASE = [
+  // ═══════════════════════════════════════════
+  //   BREADS & ROTIS
+  // ═══════════════════════════════════════════
+  { id: 1, name: "Roti (Chapati)", category: "Breads", serving: "1 medium", servingGrams: 40, calories: 120, protein: 3, carbs: 20, fat: 3.5, fiber: 2 },
+  { id: 2, name: "Paratha (Plain)", category: "Breads", serving: "1 medium", servingGrams: 60, calories: 200, protein: 4, carbs: 28, fat: 8, fiber: 2 },
+  { id: 3, name: "Naan", category: "Breads", serving: "1 piece", servingGrams: 90, calories: 260, protein: 8, carbs: 45, fat: 5, fiber: 2 },
+  { id: 4, name: "Puri", category: "Breads", serving: "1 piece", servingGrams: 30, calories: 120, protein: 2, carbs: 14, fat: 6, fiber: 1 },
+  { id: 5, name: "Bhatura", category: "Breads", serving: "1 piece", servingGrams: 80, calories: 300, protein: 6, carbs: 40, fat: 13, fiber: 1 },
+  { id: 6, name: "Missi Roti", category: "Breads", serving: "1 medium", servingGrams: 50, calories: 150, protein: 5, carbs: 22, fat: 4, fiber: 3 },
+  { id: 7, name: "Aloo Paratha", category: "Breads", serving: "1 piece", servingGrams: 80, calories: 280, protein: 5, carbs: 36, fat: 12, fiber: 3 },
+  { id: 8, name: "Paneer Paratha", category: "Breads", serving: "1 piece", servingGrams: 90, calories: 300, protein: 10, carbs: 32, fat: 14, fiber: 2 },
+  { id: 9, name: "Methi Paratha", category: "Breads", serving: "1 piece", servingGrams: 70, calories: 220, protein: 5, carbs: 30, fat: 9, fiber: 3 },
+  { id: 150, name: "Garlic Naan", category: "Breads", serving: "1 piece", servingGrams: 95, calories: 280, protein: 8, carbs: 46, fat: 6, fiber: 2 },
+  { id: 151, name: "Butter Naan", category: "Breads", serving: "1 piece", servingGrams: 95, calories: 310, protein: 8, carbs: 45, fat: 10, fiber: 2 },
+  { id: 152, name: "Rumali Roti", category: "Breads", serving: "1 piece", servingGrams: 40, calories: 100, protein: 3, carbs: 18, fat: 2, fiber: 1 },
+  { id: 153, name: "Tandoori Roti", category: "Breads", serving: "1 piece", servingGrams: 50, calories: 130, protein: 4, carbs: 24, fat: 2, fiber: 2 },
+  { id: 154, name: "Kulcha", category: "Breads", serving: "1 piece", servingGrams: 80, calories: 270, protein: 7, carbs: 42, fat: 8, fiber: 2 },
+  { id: 155, name: "Thepla", category: "Breads", serving: "1 piece", servingGrams: 45, calories: 140, protein: 4, carbs: 18, fat: 6, fiber: 2 },
+  { id: 156, name: "Makki Ki Roti", category: "Breads", serving: "1 piece", servingGrams: 50, calories: 130, protein: 2, carbs: 26, fat: 2, fiber: 3 },
+  { id: 157, name: "Gobi Paratha", category: "Breads", serving: "1 piece", servingGrams: 80, calories: 260, protein: 5, carbs: 34, fat: 11, fiber: 3 },
+
+  // ═══════════════════════════════════════════
+  //   RICE & GRAINS
+  // ═══════════════════════════════════════════
+  { id: 10, name: "White Rice (Cooked)", category: "Rice & Grains", serving: "1 cup", servingGrams: 180, calories: 210, protein: 4, carbs: 46, fat: 0.5, fiber: 1 },
+  { id: 11, name: "Brown Rice (Cooked)", category: "Rice & Grains", serving: "1 cup", servingGrams: 185, calories: 215, protein: 5, carbs: 45, fat: 1.8, fiber: 3.5 },
+  { id: 12, name: "Khichdi", category: "Rice & Grains", serving: "1 bowl", servingGrams: 200, calories: 200, protein: 7, carbs: 34, fat: 4, fiber: 3 },
+  { id: 13, name: "Biryani (Chicken)", category: "Rice & Grains", serving: "1 plate", servingGrams: 300, calories: 450, protein: 22, carbs: 52, fat: 16, fiber: 2 },
+  { id: 14, name: "Veg Pulao", category: "Rice & Grains", serving: "1 plate", servingGrams: 250, calories: 280, protein: 5, carbs: 48, fat: 7, fiber: 3 },
+  { id: 15, name: "Jeera Rice", category: "Rice & Grains", serving: "1 plate", servingGrams: 200, calories: 240, protein: 4, carbs: 44, fat: 5, fiber: 1 },
+  { id: 16, name: "Oats (Cooked)", category: "Rice & Grains", serving: "1 bowl", servingGrams: 200, calories: 150, protein: 5, carbs: 27, fat: 2.5, fiber: 4 },
+  { id: 17, name: "Poha", category: "Rice & Grains", serving: "1 plate", servingGrams: 200, calories: 250, protein: 5, carbs: 42, fat: 7, fiber: 2 },
+  { id: 18, name: "Upma", category: "Rice & Grains", serving: "1 bowl", servingGrams: 200, calories: 230, protein: 5, carbs: 36, fat: 7, fiber: 3 },
+  { id: 19, name: "Dalia (Broken Wheat)", category: "Rice & Grains", serving: "1 bowl", servingGrams: 200, calories: 180, protein: 6, carbs: 32, fat: 3, fiber: 5 },
+  { id: 160, name: "Biryani (Mutton)", category: "Rice & Grains", serving: "1 plate", servingGrams: 300, calories: 520, protein: 24, carbs: 50, fat: 22, fiber: 2 },
+  { id: 161, name: "Veg Biryani", category: "Rice & Grains", serving: "1 plate", servingGrams: 280, calories: 350, protein: 8, carbs: 58, fat: 10, fiber: 4 },
+  { id: 162, name: "Egg Biryani", category: "Rice & Grains", serving: "1 plate", servingGrams: 280, calories: 400, protein: 16, carbs: 52, fat: 14, fiber: 2 },
+  { id: 163, name: "Lemon Rice", category: "Rice & Grains", serving: "1 plate", servingGrams: 200, calories: 230, protein: 4, carbs: 42, fat: 5, fiber: 2 },
+  { id: 164, name: "Curd Rice", category: "Rice & Grains", serving: "1 bowl", servingGrams: 250, calories: 220, protein: 6, carbs: 38, fat: 5, fiber: 1 },
+  { id: 165, name: "Fried Rice (Veg)", category: "Rice & Grains", serving: "1 plate", servingGrams: 250, calories: 320, protein: 7, carbs: 48, fat: 12, fiber: 3 },
+  { id: 166, name: "Fried Rice (Chicken)", category: "Rice & Grains", serving: "1 plate", servingGrams: 280, calories: 400, protein: 18, carbs: 50, fat: 14, fiber: 2 },
+  { id: 167, name: "Egg Fried Rice", category: "Rice & Grains", serving: "1 plate", servingGrams: 260, calories: 370, protein: 14, carbs: 48, fat: 13, fiber: 2 },
+  { id: 168, name: "Idli (Plain)", category: "Rice & Grains", serving: "2 pieces", servingGrams: 80, calories: 130, protein: 4, carbs: 26, fat: 0.5, fiber: 1 },
+  { id: 169, name: "Dosa (Plain)", category: "Rice & Grains", serving: "1 piece", servingGrams: 80, calories: 160, protein: 4, carbs: 28, fat: 4, fiber: 1 },
+  { id: 170, name: "Masala Dosa", category: "Rice & Grains", serving: "1 piece", servingGrams: 150, calories: 280, protein: 6, carbs: 40, fat: 11, fiber: 3 },
+  { id: 171, name: "Rava Dosa", category: "Rice & Grains", serving: "1 piece", servingGrams: 100, calories: 220, protein: 4, carbs: 30, fat: 9, fiber: 1 },
+  { id: 172, name: "Uttapam", category: "Rice & Grains", serving: "1 piece", servingGrams: 120, calories: 200, protein: 5, carbs: 32, fat: 6, fiber: 2 },
+  { id: 173, name: "Medu Vada", category: "Rice & Grains", serving: "2 pieces", servingGrams: 80, calories: 220, protein: 6, carbs: 22, fat: 12, fiber: 2 },
+  { id: 174, name: "Maggi Noodles", category: "Rice & Grains", serving: "1 pack", servingGrams: 70, calories: 310, protein: 7, carbs: 42, fat: 13, fiber: 2 },
+  { id: 175, name: "Hakka Noodles", category: "Rice & Grains", serving: "1 plate", servingGrams: 250, calories: 380, protein: 8, carbs: 52, fat: 15, fiber: 3 },
+  { id: 176, name: "Pasta (Cooked)", category: "Rice & Grains", serving: "1 cup", servingGrams: 200, calories: 280, protein: 8, carbs: 50, fat: 4, fiber: 2 },
+  { id: 177, name: "Suji Halwa", category: "Rice & Grains", serving: "1 bowl", servingGrams: 100, calories: 250, protein: 3, carbs: 34, fat: 12, fiber: 1 },
+  { id: 178, name: "Bread Slice (White)", category: "Breads", serving: "1 slice", servingGrams: 30, calories: 80, protein: 2, carbs: 14, fat: 1, fiber: 1 },
+  { id: 179, name: "Bread Slice (Brown)", category: "Breads", serving: "1 slice", servingGrams: 30, calories: 70, protein: 3, carbs: 12, fat: 1, fiber: 2 },
+  { id: 180, name: "Pav / Bun", category: "Breads", serving: "1 piece", servingGrams: 40, calories: 110, protein: 3, carbs: 20, fat: 2, fiber: 1 },
+
+  // ═══════════════════════════════════════════
+  //   DAL & LENTILS
+  // ═══════════════════════════════════════════
+  { id: 20, name: "Dal Tadka (Toor)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 180, protein: 9, carbs: 24, fat: 5, fiber: 5 },
+  { id: 21, name: "Chana Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 200, protein: 11, carbs: 26, fat: 5, fiber: 6 },
+  { id: 22, name: "Rajma (Kidney Beans)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 210, protein: 12, carbs: 30, fat: 4, fiber: 7 },
+  { id: 23, name: "Chole (Chickpeas)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 240, protein: 10, carbs: 32, fat: 8, fiber: 6 },
+  { id: 24, name: "Moong Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 150, protein: 10, carbs: 22, fat: 2, fiber: 4 },
+  { id: 25, name: "Masoor Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 160, protein: 10, carbs: 24, fat: 2, fiber: 5 },
+  { id: 26, name: "Sambar", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 140, protein: 6, carbs: 20, fat: 4, fiber: 4 },
+  { id: 27, name: "Urad Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 190, protein: 12, carbs: 24, fat: 4, fiber: 5 },
+  { id: 181, name: "Dal Makhani", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 230, protein: 10, carbs: 22, fat: 12, fiber: 5 },
+  { id: 182, name: "Dal Fry", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 170, protein: 9, carbs: 22, fat: 5, fiber: 4 },
+  { id: 183, name: "Kadhi (Besan)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 160, protein: 5, carbs: 14, fat: 9, fiber: 2 },
+  { id: 184, name: "Rasam", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 60, protein: 2, carbs: 10, fat: 1, fiber: 2 },
+  { id: 185, name: "Panchmel Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 190, protein: 11, carbs: 26, fat: 5, fiber: 5 },
+  { id: 186, name: "Sprouts (Moong)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 100, calories: 80, protein: 7, carbs: 10, fat: 1, fiber: 4 },
+  { id: 187, name: "Black Chana (Kala Chana)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 150, calories: 200, protein: 10, carbs: 28, fat: 4, fiber: 6 },
+
+  // ═══════════════════════════════════════════
+  //   EGGS
+  // ═══════════════════════════════════════════
+  { id: 30, name: "Boiled Egg (Whole)", category: "Eggs", serving: "1 large", servingGrams: 50, calories: 70, protein: 6, carbs: 0.5, fat: 5, fiber: 0 },
+  { id: 31, name: "Egg White (Boiled)", category: "Eggs", serving: "1 large", servingGrams: 33, calories: 17, protein: 4, carbs: 0, fat: 0, fiber: 0 },
+  { id: 32, name: "Omelette (2 Eggs)", category: "Eggs", serving: "1 serving", servingGrams: 110, calories: 180, protein: 12, carbs: 1, fat: 14, fiber: 0 },
+  { id: 33, name: "Egg Bhurji", category: "Eggs", serving: "2 eggs", servingGrams: 120, calories: 220, protein: 13, carbs: 3, fat: 17, fiber: 0 },
+  { id: 34, name: "Anda Curry", category: "Eggs", serving: "2 eggs + gravy", servingGrams: 200, calories: 280, protein: 14, carbs: 8, fat: 20, fiber: 1 },
+  { id: 35, name: "Omelette (1 Egg)", category: "Eggs", serving: "1 serving", servingGrams: 55, calories: 90, protein: 6, carbs: 0.5, fat: 7, fiber: 0 },
+  { id: 188, name: "Egg Yolk", category: "Eggs", serving: "1 large", servingGrams: 17, calories: 55, protein: 3, carbs: 0.5, fat: 4.5, fiber: 0 },
+  { id: 189, name: "French Toast (1 slice)", category: "Eggs", serving: "1 slice", servingGrams: 60, calories: 150, protein: 5, carbs: 16, fat: 7, fiber: 0 },
+
+  // ═══════════════════════════════════════════
+  //   CHICKEN & MEAT & FISH
+  // ═══════════════════════════════════════════
+  { id: 40, name: "Chicken Breast (Grilled)", category: "Chicken & Meat", serving: "1 piece", servingGrams: 150, calories: 165, protein: 31, carbs: 0, fat: 3.6, fiber: 0 },
+  { id: 41, name: "Chicken Curry", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 280, protein: 22, carbs: 8, fat: 18, fiber: 1 },
+  { id: 42, name: "Butter Chicken", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 350, protein: 20, carbs: 10, fat: 26, fiber: 1 },
+  { id: 43, name: "Tandoori Chicken", category: "Chicken & Meat", serving: "2 pieces", servingGrams: 150, calories: 200, protein: 28, carbs: 4, fat: 8, fiber: 0 },
+  { id: 44, name: "Chicken Tikka", category: "Chicken & Meat", serving: "6 pieces", servingGrams: 150, calories: 220, protein: 30, carbs: 5, fat: 9, fiber: 0 },
+  { id: 45, name: "Mutton Curry", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 350, protein: 24, carbs: 6, fat: 26, fiber: 1 },
+  { id: 46, name: "Keema (Chicken)", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 300, protein: 24, carbs: 6, fat: 20, fiber: 1 },
+  { id: 47, name: "Fish Curry", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 220, protein: 20, carbs: 6, fat: 13, fiber: 1 },
+  { id: 48, name: "Chicken Thigh (Grilled)", category: "Chicken & Meat", serving: "1 piece", servingGrams: 150, calories: 230, protein: 26, carbs: 0, fat: 13, fiber: 0 },
+  { id: 190, name: "Chicken Breast (Boiled)", category: "Chicken & Meat", serving: "1 piece", servingGrams: 150, calories: 155, protein: 32, carbs: 0, fat: 3, fiber: 0 },
+  { id: 191, name: "Chicken Wings (Fried)", category: "Chicken & Meat", serving: "4 pieces", servingGrams: 120, calories: 320, protein: 20, carbs: 8, fat: 24, fiber: 0 },
+  { id: 192, name: "Chicken Leg Piece", category: "Chicken & Meat", serving: "1 piece", servingGrams: 130, calories: 210, protein: 22, carbs: 0, fat: 13, fiber: 0 },
+  { id: 193, name: "Chicken 65", category: "Chicken & Meat", serving: "1 plate", servingGrams: 150, calories: 350, protein: 22, carbs: 15, fat: 22, fiber: 1 },
+  { id: 194, name: "Chicken Momos", category: "Chicken & Meat", serving: "6 pieces", servingGrams: 150, calories: 280, protein: 14, carbs: 30, fat: 12, fiber: 1 },
+  { id: 195, name: "Mutton Keema", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 380, protein: 26, carbs: 4, fat: 28, fiber: 1 },
+  { id: 196, name: "Mutton Rogan Josh", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 360, protein: 25, carbs: 8, fat: 26, fiber: 1 },
+  { id: 197, name: "Fish (Grilled)", category: "Chicken & Meat", serving: "1 fillet", servingGrams: 150, calories: 190, protein: 28, carbs: 0, fat: 8, fiber: 0 },
+  { id: 198, name: "Fish Fry", category: "Chicken & Meat", serving: "1 piece", servingGrams: 120, calories: 250, protein: 20, carbs: 10, fat: 15, fiber: 0 },
+  { id: 199, name: "Prawns (Cooked)", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 150, calories: 140, protein: 28, carbs: 1, fat: 2, fiber: 0 },
+  { id: 200, name: "Seekh Kebab", category: "Chicken & Meat", serving: "2 pieces", servingGrams: 100, calories: 220, protein: 18, carbs: 4, fat: 14, fiber: 0 },
+  { id: 250, name: "Reshmi Kebab", category: "Chicken & Meat", serving: "4 pieces", servingGrams: 120, calories: 240, protein: 24, carbs: 4, fat: 14, fiber: 0 },
+  { id: 251, name: "Shawarma (Chicken)", category: "Chicken & Meat", serving: "1 roll", servingGrams: 200, calories: 400, protein: 22, carbs: 38, fat: 18, fiber: 2 },
+  { id: 252, name: "Keema Pav", category: "Chicken & Meat", serving: "1 plate", servingGrams: 250, calories: 420, protein: 22, carbs: 32, fat: 22, fiber: 2 },
+  { id: 253, name: "Chicken Sandwich", category: "Chicken & Meat", serving: "1 sandwich", servingGrams: 180, calories: 350, protein: 20, carbs: 30, fat: 16, fiber: 2 },
+  { id: 254, name: "Egg Sandwich", category: "Chicken & Meat", serving: "1 sandwich", servingGrams: 150, calories: 280, protein: 14, carbs: 28, fat: 12, fiber: 2 },
+  { id: 255, name: "Tuna (Canned)", category: "Chicken & Meat", serving: "1 can", servingGrams: 100, calories: 110, protein: 24, carbs: 0, fat: 1, fiber: 0 },
+
+  // ═══════════════════════════════════════════
+  //   VEGETABLES & PANEER
+  // ═══════════════════════════════════════════
+  { id: 50, name: "Aloo Gobi", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 180, protein: 4, carbs: 22, fat: 8, fiber: 4 },
+  { id: 51, name: "Palak Paneer", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 250, protein: 12, carbs: 10, fat: 18, fiber: 3 },
+  { id: 52, name: "Mixed Veg Curry", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 160, protein: 4, carbs: 18, fat: 8, fiber: 4 },
+  { id: 53, name: "Bhindi (Okra) Fry", category: "Vegetables", serving: "1 bowl", servingGrams: 150, calories: 130, protein: 3, carbs: 12, fat: 8, fiber: 4 },
+  { id: 54, name: "Paneer Bhurji", category: "Vegetables", serving: "1 bowl", servingGrams: 150, calories: 280, protein: 16, carbs: 6, fat: 22, fiber: 1 },
+  { id: 55, name: "Paneer Tikka", category: "Vegetables", serving: "6 pieces", servingGrams: 120, calories: 250, protein: 15, carbs: 8, fat: 18, fiber: 1 },
+  { id: 56, name: "Baingan Bharta", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 140, protein: 3, carbs: 14, fat: 8, fiber: 4 },
+  { id: 57, name: "Soya Chunks (Cooked)", category: "Vegetables", serving: "1 bowl", servingGrams: 100, calories: 170, protein: 26, carbs: 14, fat: 1, fiber: 4 },
+  { id: 58, name: "Salad (Mixed)", category: "Vegetables", serving: "1 big bowl", servingGrams: 150, calories: 40, protein: 2, carbs: 8, fat: 0, fiber: 3 },
+  { id: 59, name: "Cucumber", category: "Vegetables", serving: "1 medium", servingGrams: 120, calories: 15, protein: 1, carbs: 3, fat: 0, fiber: 1 },
+  { id: 60, name: "Tomato", category: "Vegetables", serving: "1 medium", servingGrams: 120, calories: 22, protein: 1, carbs: 5, fat: 0, fiber: 1 },
+  { id: 61, name: "Matar Paneer", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 270, protein: 14, carbs: 16, fat: 16, fiber: 4 },
+  { id: 62, name: "Shahi Paneer", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 320, protein: 14, carbs: 12, fat: 24, fiber: 2 },
+  { id: 256, name: "Paneer Butter Masala", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 340, protein: 14, carbs: 14, fat: 26, fiber: 2 },
+  { id: 257, name: "Kadai Paneer", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 300, protein: 14, carbs: 12, fat: 22, fiber: 2 },
+  { id: 258, name: "Malai Kofta", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 350, protein: 10, carbs: 18, fat: 26, fiber: 2 },
+  { id: 259, name: "Aloo Matar", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 180, protein: 5, carbs: 24, fat: 7, fiber: 4 },
+  { id: 260, name: "Aloo Jeera", category: "Vegetables", serving: "1 bowl", servingGrams: 180, calories: 170, protein: 3, carbs: 22, fat: 8, fiber: 3 },
+  { id: 261, name: "Palak (Spinach) Sabzi", category: "Vegetables", serving: "1 bowl", servingGrams: 150, calories: 80, protein: 4, carbs: 8, fat: 4, fiber: 4 },
+  { id: 262, name: "Lauki (Bottle Gourd)", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 80, protein: 2, carbs: 12, fat: 3, fiber: 3 },
+  { id: 263, name: "Tinda Sabzi", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 90, protein: 2, carbs: 10, fat: 4, fiber: 3 },
+  { id: 264, name: "Karela (Bitter Gourd)", category: "Vegetables", serving: "1 bowl", servingGrams: 150, calories: 60, protein: 2, carbs: 8, fat: 3, fiber: 4 },
+  { id: 265, name: "Mushroom (Cooked)", category: "Vegetables", serving: "1 bowl", servingGrams: 150, calories: 60, protein: 5, carbs: 6, fat: 2, fiber: 2 },
+  { id: 266, name: "Paneer (Raw)", category: "Vegetables", serving: "custom", servingGrams: 100, calories: 265, protein: 18, carbs: 3, fat: 20, fiber: 0 },
+  { id: 267, name: "Tofu", category: "Vegetables", serving: "custom", servingGrams: 100, calories: 76, protein: 8, carbs: 2, fat: 4.5, fiber: 0 },
+  { id: 268, name: "Corn (Boiled)", category: "Vegetables", serving: "1 cob", servingGrams: 100, calories: 96, protein: 3, carbs: 21, fat: 1, fiber: 2 },
+  { id: 269, name: "Sweet Potato (Boiled)", category: "Vegetables", serving: "1 medium", servingGrams: 130, calories: 115, protein: 2, carbs: 27, fat: 0, fiber: 4 },
+  { id: 270, name: "Boiled Potato", category: "Vegetables", serving: "1 medium", servingGrams: 150, calories: 130, protein: 3, carbs: 30, fat: 0, fiber: 2 },
+  { id: 271, name: "Pav Bhaji", category: "Vegetables", serving: "1 plate", servingGrams: 300, calories: 400, protein: 10, carbs: 52, fat: 18, fiber: 5 },
+  { id: 272, name: "Veg Momos", category: "Vegetables", serving: "6 pieces", servingGrams: 140, calories: 220, protein: 6, carbs: 32, fat: 8, fiber: 2 },
+
+  // ═══════════════════════════════════════════
+  //   DAIRY
+  // ═══════════════════════════════════════════
+  { id: 65, name: "Curd / Yogurt", category: "Dairy", serving: "1 bowl", servingGrams: 150, calories: 100, protein: 5, carbs: 7, fat: 5, fiber: 0 },
+  { id: 66, name: "Milk (Full Fat)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 150, protein: 8, carbs: 12, fat: 8, fiber: 0 },
+  { id: 67, name: "Milk (Toned)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 120, protein: 8, carbs: 12, fat: 5, fiber: 0 },
+  { id: 68, name: "Paneer", category: "Dairy", serving: "custom", servingGrams: 100, calories: 265, protein: 18, carbs: 3, fat: 20, fiber: 0 },
+  { id: 69, name: "Lassi (Sweet)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 200, protein: 6, carbs: 30, fat: 6, fiber: 0 },
+  { id: 70, name: "Chaas / Buttermilk", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 40, protein: 2, carbs: 5, fat: 1, fiber: 0 },
+  { id: 71, name: "Greek Yogurt", category: "Dairy", serving: "1 cup", servingGrams: 100, calories: 59, protein: 10, carbs: 4, fat: 0.7, fiber: 0 },
+  { id: 72, name: "Cheese Slice", category: "Dairy", serving: "1 slice", servingGrams: 20, calories: 60, protein: 4, carbs: 0.5, fat: 5, fiber: 0 },
+  { id: 273, name: "Mozzarella Cheese", category: "Dairy", serving: "custom", servingGrams: 30, calories: 85, protein: 6, carbs: 1, fat: 6, fiber: 0 },
+  { id: 274, name: "Cream Cheese", category: "Dairy", serving: "1 tbsp", servingGrams: 15, calories: 50, protein: 1, carbs: 1, fat: 5, fiber: 0 },
+  { id: 275, name: "Milk (Skimmed)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 85, protein: 8, carbs: 12, fat: 0.5, fiber: 0 },
+  { id: 276, name: "Lassi (Salted)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 80, protein: 4, carbs: 8, fat: 3, fiber: 0 },
+  { id: 277, name: "Raita (Boondi)", category: "Dairy", serving: "1 bowl", servingGrams: 150, calories: 120, protein: 4, carbs: 12, fat: 6, fiber: 0.5 },
+  { id: 278, name: "Whipped Cream", category: "Dairy", serving: "2 tbsp", servingGrams: 20, calories: 50, protein: 0.5, carbs: 2, fat: 5, fiber: 0 },
+  { id: 279, name: "Butter", category: "Dairy", serving: "1 tbsp", servingGrams: 14, calories: 100, protein: 0, carbs: 0, fat: 11, fiber: 0 },
+  { id: 280, name: "Ghee", category: "Dairy", serving: "1 tbsp", servingGrams: 14, calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0 },
+
+  // ═══════════════════════════════════════════
+  //   FRUITS
+  // ═══════════════════════════════════════════
+  { id: 75, name: "Banana", category: "Fruits", serving: "1 medium", servingGrams: 120, calories: 105, protein: 1, carbs: 27, fat: 0, fiber: 3 },
+  { id: 76, name: "Apple", category: "Fruits", serving: "1 medium", servingGrams: 180, calories: 95, protein: 0.5, carbs: 25, fat: 0, fiber: 4 },
+  { id: 77, name: "Dates", category: "Fruits", serving: "2 pieces", servingGrams: 20, calories: 56, protein: 0.5, carbs: 15, fat: 0, fiber: 1.5 },
+  { id: 78, name: "Raisins", category: "Fruits", serving: "small handful", servingGrams: 20, calories: 60, protein: 0.5, carbs: 16, fat: 0, fiber: 1 },
+  { id: 79, name: "Mango", category: "Fruits", serving: "1 cup sliced", servingGrams: 165, calories: 100, protein: 1, carbs: 25, fat: 0.5, fiber: 3 },
+  { id: 80, name: "Papaya", category: "Fruits", serving: "1 cup", servingGrams: 140, calories: 55, protein: 1, carbs: 14, fat: 0, fiber: 2 },
+  { id: 81, name: "Orange", category: "Fruits", serving: "1 medium", servingGrams: 130, calories: 62, protein: 1, carbs: 15, fat: 0, fiber: 3 },
+  { id: 82, name: "Watermelon", category: "Fruits", serving: "1 cup diced", servingGrams: 150, calories: 46, protein: 1, carbs: 12, fat: 0, fiber: 1 },
+  { id: 83, name: "Guava", category: "Fruits", serving: "1 medium", servingGrams: 100, calories: 37, protein: 1, carbs: 8, fat: 0.5, fiber: 3 },
+  { id: 281, name: "Grapes", category: "Fruits", serving: "1 cup", servingGrams: 150, calories: 104, protein: 1, carbs: 27, fat: 0, fiber: 1 },
+  { id: 282, name: "Pineapple", category: "Fruits", serving: "1 cup", servingGrams: 165, calories: 82, protein: 1, carbs: 22, fat: 0, fiber: 2 },
+  { id: 283, name: "Pomegranate", category: "Fruits", serving: "1 cup seeds", servingGrams: 150, calories: 125, protein: 2, carbs: 28, fat: 2, fiber: 6 },
+  { id: 284, name: "Chikoo (Sapota)", category: "Fruits", serving: "1 medium", servingGrams: 80, calories: 70, protein: 0.5, carbs: 18, fat: 0.5, fiber: 3 },
+  { id: 285, name: "Pear", category: "Fruits", serving: "1 medium", servingGrams: 180, calories: 100, protein: 1, carbs: 27, fat: 0, fiber: 6 },
+  { id: 286, name: "Strawberries", category: "Fruits", serving: "1 cup", servingGrams: 150, calories: 49, protein: 1, carbs: 12, fat: 0.5, fiber: 3 },
+  { id: 287, name: "Kiwi", category: "Fruits", serving: "1 medium", servingGrams: 75, calories: 42, protein: 1, carbs: 10, fat: 0, fiber: 2 },
+  { id: 288, name: "Litchi", category: "Fruits", serving: "10 pieces", servingGrams: 100, calories: 66, protein: 1, carbs: 17, fat: 0, fiber: 1 },
+  { id: 289, name: "Jamun", category: "Fruits", serving: "1 cup", servingGrams: 100, calories: 60, protein: 1, carbs: 14, fat: 0, fiber: 1 },
+  { id: 290, name: "Sitaphal (Custard Apple)", category: "Fruits", serving: "1 medium", servingGrams: 150, calories: 135, protein: 2, carbs: 34, fat: 0.5, fiber: 5 },
+
+  // ═══════════════════════════════════════════
+  //   NUTS & SEEDS
+  // ═══════════════════════════════════════════
+  { id: 85, name: "Almonds", category: "Nuts & Seeds", serving: "10 pieces", servingGrams: 14, calories: 80, protein: 3, carbs: 3, fat: 7, fiber: 2 },
+  { id: 86, name: "Peanuts (Roasted)", category: "Nuts & Seeds", serving: "small handful", servingGrams: 30, calories: 170, protein: 7, carbs: 5, fat: 14, fiber: 2 },
+  { id: 87, name: "Peanut Butter", category: "Nuts & Seeds", serving: "1 tbsp", servingGrams: 16, calories: 95, protein: 4, carbs: 3, fat: 8, fiber: 1 },
+  { id: 88, name: "Walnuts", category: "Nuts & Seeds", serving: "7 halves", servingGrams: 14, calories: 93, protein: 2, carbs: 2, fat: 9, fiber: 1 },
+  { id: 89, name: "Flax Seeds", category: "Nuts & Seeds", serving: "1 tbsp", servingGrams: 10, calories: 55, protein: 2, carbs: 3, fat: 4, fiber: 3 },
+  { id: 90, name: "Chia Seeds", category: "Nuts & Seeds", serving: "1 tbsp", servingGrams: 12, calories: 58, protein: 2, carbs: 5, fat: 4, fiber: 4 },
+  { id: 91, name: "Cashews", category: "Nuts & Seeds", serving: "10 pieces", servingGrams: 15, calories: 85, protein: 3, carbs: 5, fat: 7, fiber: 0.5 },
+  { id: 92, name: "Pumpkin Seeds", category: "Nuts & Seeds", serving: "1 tbsp", servingGrams: 10, calories: 55, protein: 3, carbs: 1.5, fat: 5, fiber: 0.5 },
+  { id: 291, name: "Pistachios", category: "Nuts & Seeds", serving: "15 pieces", servingGrams: 15, calories: 85, protein: 3, carbs: 4, fat: 7, fiber: 1.5 },
+  { id: 292, name: "Sunflower Seeds", category: "Nuts & Seeds", serving: "1 tbsp", servingGrams: 10, calories: 58, protein: 2, carbs: 2, fat: 5, fiber: 1 },
+  { id: 293, name: "Coconut (Fresh)", category: "Nuts & Seeds", serving: "1 piece", servingGrams: 40, calories: 140, protein: 1.5, carbs: 6, fat: 13, fiber: 4 },
+  { id: 294, name: "Dried Figs (Anjeer)", category: "Nuts & Seeds", serving: "2 pieces", servingGrams: 20, calories: 50, protein: 1, carbs: 13, fat: 0, fiber: 2 },
+  { id: 295, name: "Dried Apricot", category: "Nuts & Seeds", serving: "3 pieces", servingGrams: 20, calories: 48, protein: 1, carbs: 12, fat: 0, fiber: 1.5 },
+  { id: 296, name: "Peanut Butter (2 tbsp)", category: "Nuts & Seeds", serving: "2 tbsp", servingGrams: 32, calories: 190, protein: 8, carbs: 6, fat: 16, fiber: 2 },
+
+  // ═══════════════════════════════════════════
+  //   SUPPLEMENTS & SHAKES
+  // ═══════════════════════════════════════════
+  { id: 95, name: "Whey Protein (1 scoop)", category: "Supplements", serving: "1 scoop", servingGrams: 30, calories: 120, protein: 24, carbs: 3, fat: 1.5, fiber: 0 },
+  { id: 96, name: "Protein Bar (10-20g)", category: "Supplements", serving: "1 bar", servingGrams: 60, calories: 200, protein: 15, carbs: 22, fat: 7, fiber: 2 },
+  { id: 97, name: "Homemade Protein Shake", category: "Supplements", serving: "1 glass", servingGrams: 350, calories: 350, protein: 25, carbs: 40, fat: 10, fiber: 3 },
+  { id: 98, name: "Protein Shake (Water)", category: "Supplements", serving: "1 glass", servingGrams: 300, calories: 130, protein: 25, carbs: 4, fat: 1.5, fiber: 0 },
+  { id: 99, name: "Creatine (5g)", category: "Supplements", serving: "1 scoop", servingGrams: 5, calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+  { id: 297, name: "Mass Gainer (1 scoop)", category: "Supplements", serving: "1 scoop", servingGrams: 50, calories: 200, protein: 10, carbs: 35, fat: 3, fiber: 1 },
+  { id: 298, name: "BCAA (1 scoop)", category: "Supplements", serving: "1 scoop", servingGrams: 7, calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+  { id: 299, name: "Multivitamin", category: "Supplements", serving: "1 tablet", servingGrams: 1, calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+  { id: 300, name: "Fish Oil", category: "Supplements", serving: "1 softgel", servingGrams: 1, calories: 10, protein: 0, carbs: 0, fat: 1, fiber: 0 },
+
+  // ═══════════════════════════════════════════
+  //   BEVERAGES
+  // ═══════════════════════════════════════════
+  { id: 100, name: "Tea (milk & sugar)", category: "Beverages", serving: "1 cup", servingGrams: 150, calories: 50, protein: 1, carbs: 8, fat: 1.5, fiber: 0 },
+  { id: 101, name: "Tea (no sugar)", category: "Beverages", serving: "1 cup", servingGrams: 150, calories: 15, protein: 1, carbs: 1, fat: 0.5, fiber: 0 },
+  { id: 102, name: "Black Coffee", category: "Beverages", serving: "1 cup", servingGrams: 200, calories: 5, protein: 0, carbs: 1, fat: 0, fiber: 0 },
+  { id: 103, name: "Coffee (with milk)", category: "Beverages", serving: "1 cup", servingGrams: 200, calories: 60, protein: 2, carbs: 6, fat: 3, fiber: 0 },
+  { id: 104, name: "Nimbu Pani", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 30, protein: 0, carbs: 8, fat: 0, fiber: 0 },
+  { id: 105, name: "Coconut Water", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 45, protein: 2, carbs: 9, fat: 0, fiber: 0 },
+  { id: 106, name: "Green Tea", category: "Beverages", serving: "1 cup", servingGrams: 200, calories: 2, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+  { id: 400, name: "Cold Coffee", category: "Beverages", serving: "1 glass", servingGrams: 300, calories: 180, protein: 5, carbs: 28, fat: 5, fiber: 0 },
+  { id: 401, name: "Mango Shake", category: "Beverages", serving: "1 glass", servingGrams: 300, calories: 250, protein: 6, carbs: 42, fat: 6, fiber: 2 },
+  { id: 402, name: "Banana Shake", category: "Beverages", serving: "1 glass", servingGrams: 300, calories: 220, protein: 8, carbs: 36, fat: 6, fiber: 2 },
+  { id: 403, name: "Orange Juice", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 110, protein: 2, carbs: 26, fat: 0.5, fiber: 0.5 },
+  { id: 404, name: "Apple Juice", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 115, protein: 0.5, carbs: 28, fat: 0, fiber: 0.5 },
+  { id: 405, name: "Sugarcane Juice", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 180, protein: 0, carbs: 45, fat: 0, fiber: 0 },
+  { id: 406, name: "Jaljeera", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 25, protein: 0, carbs: 6, fat: 0, fiber: 0 },
+  { id: 407, name: "Aam Panna", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 100, protein: 0, carbs: 25, fat: 0, fiber: 1 },
+  { id: 408, name: "Soda / Cola", category: "Beverages", serving: "1 can", servingGrams: 330, calories: 140, protein: 0, carbs: 39, fat: 0, fiber: 0 },
+  { id: 409, name: "Energy Drink", category: "Beverages", serving: "1 can", servingGrams: 250, calories: 110, protein: 0, carbs: 28, fat: 0, fiber: 0 },
+
+  // ═══════════════════════════════════════════
+  //   SNACKS, SWEETS & FAST FOOD
+  // ═══════════════════════════════════════════
+  { id: 110, name: "Samosa", category: "Snacks", serving: "1 piece", servingGrams: 80, calories: 250, protein: 4, carbs: 28, fat: 14, fiber: 2 },
+  { id: 111, name: "Pakora / Bhaji", category: "Snacks", serving: "4 pieces", servingGrams: 80, calories: 200, protein: 4, carbs: 20, fat: 12, fiber: 2 },
+  { id: 112, name: "Ice Cream (Vanilla)", category: "Snacks", serving: "1 scoop", servingGrams: 66, calories: 140, protein: 2, carbs: 16, fat: 7, fiber: 0 },
+  { id: 113, name: "Dark Chocolate (70%+)", category: "Snacks", serving: "2 squares", servingGrams: 20, calories: 110, protein: 2, carbs: 8, fat: 8, fiber: 2 },
+  { id: 114, name: "Biscuits (Parle-G type)", category: "Snacks", serving: "4 biscuits", servingGrams: 28, calories: 140, protein: 2, carbs: 24, fat: 4, fiber: 0 },
+  { id: 115, name: "Namkeen / Mixture", category: "Snacks", serving: "small bowl", servingGrams: 30, calories: 150, protein: 3, carbs: 18, fat: 8, fiber: 1 },
+  { id: 116, name: "Frozen Banana Ice Cream", category: "Snacks", serving: "1 bowl", servingGrams: 120, calories: 105, protein: 1, carbs: 27, fat: 0, fiber: 3 },
+  { id: 117, name: "Makhana (Roasted)", category: "Snacks", serving: "1 bowl", servingGrams: 30, calories: 100, protein: 3, carbs: 18, fat: 1, fiber: 2 },
+  { id: 118, name: "Murmura / Puffed Rice", category: "Snacks", serving: "1 bowl", servingGrams: 30, calories: 110, protein: 2, carbs: 25, fat: 0.5, fiber: 1 },
+  { id: 119, name: "Chocolate Shake", category: "Snacks", serving: "1 glass", servingGrams: 300, calories: 280, protein: 8, carbs: 40, fat: 10, fiber: 1 },
+  { id: 120, name: "Kulfi", category: "Snacks", serving: "1 piece", servingGrams: 80, calories: 160, protein: 3, carbs: 20, fat: 8, fiber: 0 },
+  { id: 410, name: "Gulab Jamun", category: "Snacks", serving: "2 pieces", servingGrams: 60, calories: 300, protein: 3, carbs: 40, fat: 14, fiber: 0 },
+  { id: 411, name: "Rasgulla", category: "Snacks", serving: "2 pieces", servingGrams: 60, calories: 180, protein: 3, carbs: 36, fat: 2, fiber: 0 },
+  { id: 412, name: "Jalebi", category: "Snacks", serving: "2 pieces", servingGrams: 50, calories: 240, protein: 2, carbs: 40, fat: 8, fiber: 0 },
+  { id: 413, name: "Halwa (Gajar/Sooji)", category: "Snacks", serving: "1 bowl", servingGrams: 100, calories: 280, protein: 4, carbs: 38, fat: 13, fiber: 1 },
+  { id: 414, name: "Barfi / Burfi", category: "Snacks", serving: "1 piece", servingGrams: 30, calories: 130, protein: 3, carbs: 16, fat: 6, fiber: 0 },
+  { id: 415, name: "Laddu (Besan)", category: "Snacks", serving: "1 piece", servingGrams: 40, calories: 180, protein: 4, carbs: 20, fat: 10, fiber: 1 },
+  { id: 416, name: "Kheer / Payasam", category: "Snacks", serving: "1 bowl", servingGrams: 150, calories: 200, protein: 5, carbs: 30, fat: 7, fiber: 0 },
+  { id: 417, name: "Rasmalai", category: "Snacks", serving: "2 pieces", servingGrams: 80, calories: 220, protein: 6, carbs: 28, fat: 10, fiber: 0 },
+  { id: 418, name: "Kachori", category: "Snacks", serving: "1 piece", servingGrams: 60, calories: 220, protein: 4, carbs: 24, fat: 12, fiber: 2 },
+  { id: 419, name: "Vada Pav", category: "Snacks", serving: "1 piece", servingGrams: 150, calories: 300, protein: 6, carbs: 38, fat: 14, fiber: 3 },
+  { id: 420, name: "Dabeli", category: "Snacks", serving: "1 piece", servingGrams: 140, calories: 260, protein: 5, carbs: 36, fat: 11, fiber: 3 },
+  { id: 421, name: "Spring Roll (Veg)", category: "Snacks", serving: "2 pieces", servingGrams: 80, calories: 180, protein: 3, carbs: 22, fat: 9, fiber: 1 },
+  { id: 422, name: "French Fries", category: "Snacks", serving: "small", servingGrams: 100, calories: 270, protein: 3, carbs: 34, fat: 14, fiber: 3 },
+  { id: 423, name: "Burger (Chicken)", category: "Snacks", serving: "1 piece", servingGrams: 200, calories: 400, protein: 22, carbs: 34, fat: 20, fiber: 2 },
+  { id: 424, name: "Burger (Veg)", category: "Snacks", serving: "1 piece", servingGrams: 180, calories: 350, protein: 10, carbs: 40, fat: 16, fiber: 3 },
+  { id: 425, name: "Pizza Slice", category: "Snacks", serving: "1 slice", servingGrams: 120, calories: 280, protein: 11, carbs: 30, fat: 13, fiber: 2 },
+  { id: 426, name: "Wrap / Roll (Chicken)", category: "Snacks", serving: "1 roll", servingGrams: 200, calories: 380, protein: 20, carbs: 36, fat: 16, fiber: 2 },
+  { id: 427, name: "Paneer Roll", category: "Snacks", serving: "1 roll", servingGrams: 180, calories: 360, protein: 14, carbs: 36, fat: 18, fiber: 2 },
+  { id: 428, name: "Dhokla", category: "Snacks", serving: "3 pieces", servingGrams: 80, calories: 150, protein: 5, carbs: 22, fat: 4, fiber: 1 },
+  { id: 429, name: "Bhel Puri", category: "Snacks", serving: "1 plate", servingGrams: 100, calories: 200, protein: 4, carbs: 30, fat: 7, fiber: 3 },
+  { id: 430, name: "Sev Puri", category: "Snacks", serving: "6 pieces", servingGrams: 120, calories: 250, protein: 4, carbs: 28, fat: 14, fiber: 2 },
+  { id: 431, name: "Dahi Puri", category: "Snacks", serving: "6 pieces", servingGrams: 140, calories: 230, protein: 5, carbs: 30, fat: 10, fiber: 2 },
+  { id: 432, name: "Pani Puri (Gol Gappe)", category: "Snacks", serving: "6 pieces", servingGrams: 100, calories: 180, protein: 3, carbs: 28, fat: 6, fiber: 2 },
+  { id: 433, name: "Aloo Tikki", category: "Snacks", serving: "2 pieces", servingGrams: 100, calories: 200, protein: 3, carbs: 26, fat: 10, fiber: 2 },
+  { id: 434, name: "Milk Chocolate", category: "Snacks", serving: "1 bar", servingGrams: 40, calories: 220, protein: 3, carbs: 24, fat: 13, fiber: 1 },
+  { id: 435, name: "Cookies / Biscuit", category: "Snacks", serving: "2 cookies", servingGrams: 30, calories: 140, protein: 2, carbs: 20, fat: 6, fiber: 0 },
+  { id: 436, name: "Cake Slice", category: "Snacks", serving: "1 slice", servingGrams: 80, calories: 280, protein: 4, carbs: 36, fat: 14, fiber: 0 },
+  { id: 437, name: "Brownie", category: "Snacks", serving: "1 piece", servingGrams: 60, calories: 240, protein: 3, carbs: 30, fat: 13, fiber: 1 },
+  { id: 438, name: "Doughnut", category: "Snacks", serving: "1 piece", servingGrams: 70, calories: 270, protein: 4, carbs: 30, fat: 15, fiber: 1 },
+
+  // ═══════════════════════════════════════════
+  //   COOKING OILS & CONDIMENTS
+  // ═══════════════════════════════════════════
+  { id: 440, name: "Cooking Oil", category: "Others", serving: "1 tbsp", servingGrams: 14, calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0 },
+  { id: 441, name: "Olive Oil", category: "Others", serving: "1 tbsp", servingGrams: 14, calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0 },
+  { id: 442, name: "Honey", category: "Others", serving: "1 tbsp", servingGrams: 21, calories: 64, protein: 0, carbs: 17, fat: 0, fiber: 0 },
+  { id: 443, name: "Sugar", category: "Others", serving: "1 tsp", servingGrams: 4, calories: 16, protein: 0, carbs: 4, fat: 0, fiber: 0 },
+  { id: 444, name: "Jaggery (Gur)", category: "Others", serving: "1 piece", servingGrams: 20, calories: 76, protein: 0, carbs: 20, fat: 0, fiber: 0 },
+  { id: 445, name: "Pickle (Achar)", category: "Others", serving: "1 tbsp", servingGrams: 15, calories: 30, protein: 0, carbs: 3, fat: 2, fiber: 0 },
+  { id: 446, name: "Chutney (Mint/Coriander)", category: "Others", serving: "2 tbsp", servingGrams: 30, calories: 15, protein: 0.5, carbs: 2, fat: 0.5, fiber: 1 },
+  { id: 447, name: "Ketchup", category: "Others", serving: "1 tbsp", servingGrams: 15, calories: 20, protein: 0, carbs: 5, fat: 0, fiber: 0 },
+  { id: 448, name: "Mayonnaise", category: "Others", serving: "1 tbsp", servingGrams: 15, calories: 100, protein: 0, carbs: 0, fat: 11, fiber: 0 },
+  { id: 449, name: "Coconut Chutney", category: "Others", serving: "2 tbsp", servingGrams: 30, calories: 50, protein: 1, carbs: 3, fat: 4, fiber: 1 },
+  { id: 450, name: "Soy Sauce", category: "Others", serving: "1 tbsp", servingGrams: 15, calories: 8, protein: 1, carbs: 1, fat: 0, fiber: 0 },
+];
+
+// ── Meal Categories ──
+const MEAL_CATEGORIES = [
+  { id: "breakfast", name: "Breakfast", icon: "☀️", timeRange: "7 AM – 10 AM" },
+  { id: "lunch", name: "Lunch", icon: "🍛", timeRange: "12 PM – 2 PM" },
+  { id: "evening", name: "Evening / Pre-Gym", icon: "💪", timeRange: "4 PM – 6 PM" },
+  { id: "dinner", name: "Dinner", icon: "🌙", timeRange: "8 PM – 10 PM" },
+  { id: "snacks", name: "Snacks", icon: "🍪", timeRange: "Anytime" },
+];
+
+// ── Quick Add Presets ──
+const QUICK_ADD_PRESETS = [
+  { name: "My Breakfast", icon: "🌅", items: [{ foodId: 1, qty: 2 }, { foodId: 32, qty: 1 }, { foodId: 30, qty: 2 }, { foodId: 77, qty: 1 }, { foodId: 100, qty: 1 }, { foodId: 85, qty: 1 }] },
+  { name: "My Lunch", icon: "🍽️", items: [{ foodId: 1, qty: 4 }, { foodId: 52, qty: 1 }, { foodId: 65, qty: 1 }, { foodId: 40, qty: 1 }] },
+  { name: "Pre-Gym Shake", icon: "🥤", items: [{ foodId: 97, qty: 1 }, { foodId: 75, qty: 1 }] },
+  { name: "Rice + Dal", icon: "🍚", items: [{ foodId: 10, qty: 1 }, { foodId: 20, qty: 1 }] },
+  { name: "Clean Breakfast", icon: "✅", items: [{ foodId: 1, qty: 1 }, { foodId: 31, qty: 3 }, { foodId: 30, qty: 1 }, { foodId: 77, qty: 1 }, { foodId: 101, qty: 1 }] },
+  { name: "Clean Lunch", icon: "💚", items: [{ foodId: 1, qty: 2 }, { foodId: 52, qty: 1 }, { foodId: 40, qty: 1 }, { foodId: 58, qty: 1 }, { foodId: 65, qty: 1 }] },
+];
+
+// ── EXERCISE DATABASE ──
+const MUSCLE_GROUPS = [
+  { id: "chest", name: "Chest", icon: "🏋️", color: "#ff4757" },
+  { id: "back", name: "Back", icon: "💪", color: "#4d8dff" },
+  { id: "shoulders", name: "Shoulders", icon: "⚡", color: "#ff8c42" },
+  { id: "biceps", name: "Biceps", icon: "💪", color: "#00e896" },
+  { id: "triceps", name: "Triceps", icon: "🔥", color: "#a855f7" },
+  { id: "legs", name: "Legs", icon: "🦵", color: "#22d3ee" },
+  { id: "abs", name: "Abs", icon: "🎯", color: "#facc15" },
+  { id: "cardio", name: "Cardio", icon: "🏃", color: "#f472b6" },
+  { id: "forearms", name: "Forearms", icon: "✊", color: "#fb923c" },
+  { id: "traps", name: "Traps", icon: "🔺", color: "#34d399" },
+];
+
+const EXERCISE_DATABASE = [
+  // CHEST
+  { id: 201, name: "Flat Bench Press", muscle: "chest", equipment: "Barbell" },
+  { id: 202, name: "Incline Bench Press", muscle: "chest", equipment: "Barbell" },
+  { id: 203, name: "Decline Bench Press", muscle: "chest", equipment: "Barbell" },
+  { id: 204, name: "Dumbbell Fly", muscle: "chest", equipment: "Dumbbells" },
+  { id: 205, name: "Cable Crossover", muscle: "chest", equipment: "Cable" },
+  { id: 206, name: "Incline Dumbbell Press", muscle: "chest", equipment: "Dumbbells" },
+  { id: 207, name: "Dumbbell Bench Press", muscle: "chest", equipment: "Dumbbells" },
+  { id: 208, name: "Push-Ups", muscle: "chest", equipment: "Bodyweight" },
+  { id: 209, name: "Chest Dips", muscle: "chest", equipment: "Bodyweight" },
+  { id: 210, name: "Pec Deck Machine", muscle: "chest", equipment: "Machine" },
+  { id: 211, name: "Machine Chest Press", muscle: "chest", equipment: "Machine" },
+  // BACK
+  { id: 220, name: "Deadlift", muscle: "back", equipment: "Barbell" },
+  { id: 221, name: "Barbell Row", muscle: "back", equipment: "Barbell" },
+  { id: 222, name: "Lat Pulldown", muscle: "back", equipment: "Cable" },
+  { id: 223, name: "Pull-Ups", muscle: "back", equipment: "Bodyweight" },
+  { id: 224, name: "Seated Cable Row", muscle: "back", equipment: "Cable" },
+  { id: 225, name: "T-Bar Row", muscle: "back", equipment: "Barbell" },
+  { id: 226, name: "Dumbbell Row", muscle: "back", equipment: "Dumbbells" },
+  { id: 227, name: "Face Pull", muscle: "back", equipment: "Cable" },
+  { id: 228, name: "Chin-Ups", muscle: "back", equipment: "Bodyweight" },
+  { id: 229, name: "Hyperextensions", muscle: "back", equipment: "Bodyweight" },
+  { id: 230, name: "Machine Row", muscle: "back", equipment: "Machine" },
+  // SHOULDERS
+  { id: 240, name: "Overhead Press (OHP)", muscle: "shoulders", equipment: "Barbell" },
+  { id: 241, name: "Dumbbell Shoulder Press", muscle: "shoulders", equipment: "Dumbbells" },
+  { id: 242, name: "Lateral Raise", muscle: "shoulders", equipment: "Dumbbells" },
+  { id: 243, name: "Front Raise", muscle: "shoulders", equipment: "Dumbbells" },
+  { id: 244, name: "Reverse Fly", muscle: "shoulders", equipment: "Dumbbells" },
+  { id: 245, name: "Arnold Press", muscle: "shoulders", equipment: "Dumbbells" },
+  { id: 246, name: "Upright Row", muscle: "shoulders", equipment: "Barbell" },
+  { id: 247, name: "Cable Lateral Raise", muscle: "shoulders", equipment: "Cable" },
+  { id: 248, name: "Machine Shoulder Press", muscle: "shoulders", equipment: "Machine" },
+  { id: 249, name: "Shrugs", muscle: "traps", equipment: "Dumbbells" },
+  // BICEPS
+  { id: 460, name: "Barbell Curl", muscle: "biceps", equipment: "Barbell" },
+  { id: 461, name: "Dumbbell Curl", muscle: "biceps", equipment: "Dumbbells" },
+  { id: 462, name: "Hammer Curl", muscle: "biceps", equipment: "Dumbbells" },
+  { id: 463, name: "Preacher Curl", muscle: "biceps", equipment: "Barbell" },
+  { id: 464, name: "Concentration Curl", muscle: "biceps", equipment: "Dumbbells" },
+  { id: 465, name: "Cable Curl", muscle: "biceps", equipment: "Cable" },
+  { id: 466, name: "Incline Dumbbell Curl", muscle: "biceps", equipment: "Dumbbells" },
+  { id: 467, name: "EZ Bar Curl", muscle: "biceps", equipment: "Barbell" },
+  { id: 468, name: "Spider Curl", muscle: "biceps", equipment: "Dumbbells" },
+  // TRICEPS
+  { id: 470, name: "Tricep Pushdown", muscle: "triceps", equipment: "Cable" },
+  { id: 471, name: "Overhead Tricep Extension", muscle: "triceps", equipment: "Dumbbells" },
+  { id: 472, name: "Skull Crushers", muscle: "triceps", equipment: "Barbell" },
+  { id: 473, name: "Close-Grip Bench Press", muscle: "triceps", equipment: "Barbell" },
+  { id: 474, name: "Tricep Dips", muscle: "triceps", equipment: "Bodyweight" },
+  { id: 475, name: "Rope Pushdown", muscle: "triceps", equipment: "Cable" },
+  { id: 476, name: "Diamond Push-Ups", muscle: "triceps", equipment: "Bodyweight" },
+  { id: 477, name: "Kickbacks", muscle: "triceps", equipment: "Dumbbells" },
+  // LEGS
+  { id: 480, name: "Barbell Squat", muscle: "legs", equipment: "Barbell" },
+  { id: 481, name: "Leg Press", muscle: "legs", equipment: "Machine" },
+  { id: 482, name: "Romanian Deadlift", muscle: "legs", equipment: "Barbell" },
+  { id: 483, name: "Leg Extension", muscle: "legs", equipment: "Machine" },
+  { id: 484, name: "Leg Curl", muscle: "legs", equipment: "Machine" },
+  { id: 485, name: "Lunges", muscle: "legs", equipment: "Dumbbells" },
+  { id: 486, name: "Bulgarian Split Squat", muscle: "legs", equipment: "Dumbbells" },
+  { id: 487, name: "Calf Raises", muscle: "legs", equipment: "Machine" },
+  { id: 488, name: "Hack Squat", muscle: "legs", equipment: "Machine" },
+  { id: 489, name: "Front Squat", muscle: "legs", equipment: "Barbell" },
+  { id: 490, name: "Goblet Squat", muscle: "legs", equipment: "Dumbbells" },
+  { id: 491, name: "Hip Thrust", muscle: "legs", equipment: "Barbell" },
+  { id: 492, name: "Sumo Deadlift", muscle: "legs", equipment: "Barbell" },
+  // ABS
+  { id: 500, name: "Crunches", muscle: "abs", equipment: "Bodyweight" },
+  { id: 501, name: "Hanging Leg Raise", muscle: "abs", equipment: "Bodyweight" },
+  { id: 502, name: "Plank", muscle: "abs", equipment: "Bodyweight" },
+  { id: 503, name: "Cable Crunch", muscle: "abs", equipment: "Cable" },
+  { id: 504, name: "Ab Wheel Rollout", muscle: "abs", equipment: "Ab Wheel" },
+  { id: 505, name: "Russian Twist", muscle: "abs", equipment: "Bodyweight" },
+  { id: 506, name: "Mountain Climbers", muscle: "abs", equipment: "Bodyweight" },
+  { id: 507, name: "Leg Raises (Flat)", muscle: "abs", equipment: "Bodyweight" },
+  { id: 508, name: "Bicycle Crunches", muscle: "abs", equipment: "Bodyweight" },
+  { id: 509, name: "Dead Bug", muscle: "abs", equipment: "Bodyweight" },
+  { id: 510, name: "Pallof Press", muscle: "abs", equipment: "Cable" },
+  { id: 511, name: "Toe Touches", muscle: "abs", equipment: "Bodyweight" },
+  { id: 512, name: "Flutter Kicks", muscle: "abs", equipment: "Bodyweight" },
+  { id: 513, name: "V-Ups", muscle: "abs", equipment: "Bodyweight" },
+  { id: 514, name: "Side Plank", muscle: "abs", equipment: "Bodyweight" },
+  // CARDIO
+  { id: 520, name: "Running", muscle: "cardio", equipment: "None" },
+  { id: 521, name: "Treadmill", muscle: "cardio", equipment: "Machine" },
+  { id: 522, name: "Cycling", muscle: "cardio", equipment: "Machine" },
+  { id: 523, name: "Jump Rope", muscle: "cardio", equipment: "Rope" },
+  { id: 524, name: "Stair Climber", muscle: "cardio", equipment: "Machine" },
+  { id: 525, name: "Rowing Machine", muscle: "cardio", equipment: "Machine" },
+  { id: 526, name: "Elliptical", muscle: "cardio", equipment: "Machine" },
+  { id: 527, name: "Swimming", muscle: "cardio", equipment: "None" },
+  { id: 528, name: "Battle Ropes", muscle: "cardio", equipment: "Rope" },
+  { id: 529, name: "Walking", muscle: "cardio", equipment: "None" },
+  { id: 530, name: "Burpees", muscle: "cardio", equipment: "Bodyweight" },
+  { id: 531, name: "HIIT Session", muscle: "cardio", equipment: "None" },
+  // FOREARMS
+  { id: 540, name: "Wrist Curls", muscle: "forearms", equipment: "Dumbbells" },
+  { id: 541, name: "Reverse Wrist Curls", muscle: "forearms", equipment: "Dumbbells" },
+  { id: 542, name: "Farmer's Walk", muscle: "forearms", equipment: "Dumbbells" },
+];
+
+// ── Default Profile ──
+const DEFAULT_PROFILE = { name: "Sahil", age: 21, height: 167, weight: 67, gender: "male", activityLevel: 1.65, goal: "cut" };
+
+function calcTargets(profile) {
+  const bmr = profile.gender === "male"
+    ? Math.round(10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5)
+    : Math.round(10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161);
+  const tdee = Math.round(bmr * profile.activityLevel);
+  let targetCal = tdee;
+  if (profile.goal === "cut") targetCal = tdee - 500;
+  else if (profile.goal === "bulk") targetCal = tdee + 300;
+  const protein = Math.round(profile.weight * 2.1);
+  const fat = Math.round((targetCal * 0.25) / 9);
+  const carbs = Math.round((targetCal - protein * 4 - fat * 9) / 4);
+  return { bmr, tdee, calories: targetCal, protein, carbs, fat };
+}
+
+const DEFAULT_SPLIT = [
+  { day: 0, name: "Sunday", workout: "Rest", muscles: [] },
+  { day: 1, name: "Monday", workout: "Chest", muscles: ["chest"] },
+  { day: 2, name: "Tuesday", workout: "Back", muscles: ["back", "traps"] },
+  { day: 3, name: "Wednesday", workout: "Shoulders", muscles: ["shoulders"] },
+  { day: 4, name: "Thursday", workout: "Arms", muscles: ["biceps", "triceps", "forearms"] },
+  { day: 5, name: "Friday", workout: "Legs", muscles: ["legs"] },
+  { day: 6, name: "Saturday", workout: "Cardio / Light", muscles: ["cardio", "abs"] },
+];

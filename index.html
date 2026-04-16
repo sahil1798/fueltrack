@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Track your daily nutrition, macros, workouts, and progress. Built for gym athletes who want visible abs.">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FuelTrack">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+  <title>FuelTrack — Nutrition & Workout Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">🔥</div>
+          <div>
+            <div class="sidebar-logo-text">FuelTrack</div>
+            <div class="sidebar-logo-sub">Nutrition + Gym</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')" id="navDashboard">
+          <span class="nav-item-icon">📊</span>
+          <span>Dashboard</span>
+        </div>
+
+        <div class="nav-section-label">Track</div>
+        <div class="nav-item" data-page="meals" onclick="navigateTo('meals')" id="navMeals">
+          <span class="nav-item-icon">🍽️</span>
+          <span>Meals</span>
+        </div>
+        <div class="nav-item" data-page="workouts" onclick="navigateTo('workouts')" id="navWorkouts">
+          <span class="nav-item-icon">🏋️</span>
+          <span>Workouts</span>
+        </div>
+
+        <div class="nav-section-label">Analyze</div>
+        <div class="nav-item" data-page="progress" onclick="navigateTo('progress')" id="navProgress">
+          <span class="nav-item-icon">📈</span>
+          <span>Progress</span>
+        </div>
+
+        <div class="nav-section-label">Settings</div>
+        <div class="nav-item" data-page="profile" onclick="navigateTo('profile')" id="navProfile">
+          <span class="nav-item-icon">👤</span>
+          <span>Profile</span>
+        </div>
+        <div class="nav-item" onclick="installPWA()" id="installBtn" style="display:none">
+          <span class="nav-item-icon">📲</span>
+          <span>Install App</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user" onclick="navigateTo('profile')">
+          <div class="sidebar-user-avatar">S</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarUserName">Sahil</div>
+            <div class="sidebar-user-goal">CUTTING · ABS MODE</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Mobile Overlay ── -->
+    <div class="mobile-overlay" onclick="toggleMobileSidebar()"></div>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content" id="mainContent">
+      <!-- Rendered by JS -->
+    </main>
+
+    <!-- ── Mobile Bottom Nav ── -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="bottom-nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')" id="mNavDash">
+        <span class="bottom-nav-icon">📊</span>
+        <span class="bottom-nav-label">Home</span>
+      </div>
+      <div class="bottom-nav-item" data-page="meals" onclick="navigateTo('meals')" id="mNavMeals">
+        <span class="bottom-nav-icon">🍽️</span>
+        <span class="bottom-nav-label">Meals</span>
+      </div>
+      <div class="bottom-nav-item" data-page="workouts" onclick="navigateTo('workouts')" id="mNavWork">
+        <span class="bottom-nav-icon">🏋️</span>
+        <span class="bottom-nav-label">Gym</span>
+      </div>
+      <div class="bottom-nav-item" data-page="progress" onclick="navigateTo('progress')" id="mNavProg">
+        <span class="bottom-nav-icon">📈</span>
+        <span class="bottom-nav-label">Progress</span>
+      </div>
+      <div class="bottom-nav-item" data-page="profile" onclick="navigateTo('profile')" id="mNavProf">
+        <span class="bottom-nav-icon">👤</span>
+        <span class="bottom-nav-label">Profile</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!--           MODALS                  -->
+  <!-- ══════════════════════════════════ -->
+
+  <!-- Add Food Modal -->
+  <div class="modal-overlay" id="addFoodModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Add Food</h2>
+        <button class="modal-close" onclick="closeAddFoodModal()" id="closeFoodModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="foodSearchInput" placeholder="Search foods... roti, chicken, dal..."
+                 oninput="renderFoodSearchResults(this.value)" autocomplete="off">
+        </div>
+        <div class="category-chips" id="foodCategoryChips">
+          <button class="category-chip active" data-category="All" onclick="filterByCategory('All', this)">All</button>
+          <button class="category-chip" data-category="Breads" onclick="filterByCategory('Breads', this)">🫓 Breads</button>
+          <button class="category-chip" data-category="Rice & Grains" onclick="filterByCategory('Rice & Grains', this)">🍚 Rice</button>
+          <button class="category-chip" data-category="Dal & Lentils" onclick="filterByCategory('Dal & Lentils', this)">🥘 Dal</button>
+          <button class="category-chip" data-category="Eggs" onclick="filterByCategory('Eggs', this)">🥚 Eggs</button>
+          <button class="category-chip" data-category="Chicken & Meat" onclick="filterByCategory('Chicken & Meat', this)">🍗 Meat</button>
+          <button class="category-chip" data-category="Vegetables" onclick="filterByCategory('Vegetables', this)">🥬 Veg</button>
+          <button class="category-chip" data-category="Dairy" onclick="filterByCategory('Dairy', this)">🥛 Dairy</button>
+          <button class="category-chip" data-category="Fruits" onclick="filterByCategory('Fruits', this)">🍌 Fruits</button>
+          <button class="category-chip" data-category="Nuts & Seeds" onclick="filterByCategory('Nuts & Seeds', this)">🥜 Nuts</button>
+          <button class="category-chip" data-category="Supplements" onclick="filterByCategory('Supplements', this)">💊 Supp</button>
+          <button class="category-chip" data-category="Beverages" onclick="filterByCategory('Beverages', this)">☕ Drinks</button>
+          <button class="category-chip" data-category="Snacks" onclick="filterByCategory('Snacks', this)">🍪 Snacks</button>
+          <button class="category-chip" data-category="Others" onclick="filterByCategory('Others', this)">🫙 Others</button>
+        </div>
+        <div class="food-results" id="foodSearchResults">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Exercise Modal -->
+  <div class="modal-overlay" id="addExerciseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Add Exercise</h2>
+        <button class="modal-close" onclick="closeAddExerciseModal()" id="closeExerciseModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="exerciseSearchInput" placeholder="Search exercises... bench press, squat..."
+                 oninput="renderExerciseSearchResults(this.value)" autocomplete="off">
+        </div>
+        <div class="category-chips" id="exerciseMuscleChips">
+          <button class="category-chip active" onclick="filterExerciseByMuscle('All', this)">All</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('chest', this)">🏋️ Chest</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('back', this)">💪 Back</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('shoulders', this)">⚡ Shoulders</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('biceps', this)">💪 Biceps</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('triceps', this)">🔥 Triceps</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('legs', this)">🦵 Legs</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('abs', this)">🎯 Abs</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('cardio', this)">🏃 Cardio</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('forearms', this)">✊ Forearms</button>
+          <button class="category-chip" onclick="filterExerciseByMuscle('traps', this)">🔺 Traps</button>
+        </div>
+        <div class="food-results" id="exerciseSearchResults">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Set Logger Modal -->
+  <div class="modal-overlay" id="setLoggerModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h2 class="modal-title">Log Sets</h2>
+        <button class="modal-close" onclick="closeSetLogger()" id="closeSetLogger">✕</button>
+      </div>
+      <div class="modal-body" id="setLoggerBody">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeSetLogger()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmExercise()" id="btnConfirmExercise">✓ Log Exercise</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portion Customizer Modal -->
+  <div class="modal-overlay" id="portionModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h2 class="modal-title">Customize Portion</h2>
+        <button class="modal-close" onclick="closePortionCustomizer()" id="closePortionModal">✕</button>
+      </div>
+      <div class="modal-body" id="portionBody">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closePortionCustomizer()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmPortion()" id="btnConfirmPortion">✓ Add Food</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="charts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
