@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "fueltrack",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ],
+  "cleanUrls": true
+}
