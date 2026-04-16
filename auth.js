@@ -233,9 +233,12 @@ async function loadUserData(uid) {
   onSnapshot(doc(db, "users", uid), (doc) => {
     if (doc.exists()) {
       const cloudData = doc.data();
-      Object.assign(window.APP, cloudData);
-      localStorage.setItem('nutritionTracker', JSON.stringify(window.APP));
-      if (window.renderCurrentPage) window.renderCurrentPage();
+      
+      // Handover to main app logic
+      if (window.applyCloudData) {
+        window.applyCloudData(cloudData);
+      }
+      
       updateProfileUI(cloudData.profile);
     }
   });

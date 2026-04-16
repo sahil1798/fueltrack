@@ -12,6 +12,7 @@ const APP = {
   workouts: {},    // { "2026-04-16": [ { exerciseId, sets: [{reps, weight}], muscle } ] }
   weightLog: [],   // [ { date, weight } ]
   waterLog: {},    // { "2026-04-16": glasses }
+  isCloudLoaded: false, // Guard for cloud sync
 };
 
 // ── Date Helpers ──
@@ -61,11 +62,33 @@ function saveState() {
   };
   localStorage.setItem('nutritionTracker', JSON.stringify(data));
   
-  // Cloud Sync if authenticated
-  if (window.syncToCloud) {
+  // Cloud Sync if authenticated AND cloud is loaded (prevent overwrite of cloud data by defaults)
+  if (window.syncToCloud && APP.isCloudLoaded) {
     window.syncToCloud(data);
   }
 }
+
+// ── Bridge for Auth.js ──
+window.applyCloudData = function(data) {
+  if (!data) return;
+  
+  // Deep merge cloud data into local state
+  Object.assign(APP, data);
+  
+  // Mark as loaded to enable cloud saving
+  APP.isCloudLoaded = true;
+  
+  // Persistence
+  localStorage.setItem('nutritionTracker', JSON.stringify(data));
+  
+  // Recalculate everything
+  if (APP.profile) {
+    APP.targets = calcTargets(APP.profile);
+  }
+  
+  // Full UI Refresh
+  if (window.renderCurrentPage) window.renderCurrentPage();
+};
 
 function loadState() {
   const raw = localStorage.getItem('nutritionTracker');
