@@ -1,4 +1,4 @@
-// FuelTrack — Aurora 2.0 Identity Engine
+// FuelTrack — Aurora 3.0 Cinematic Identity Engine
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
   getAuth, 
@@ -25,8 +25,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-// State
-let currentUser = null;
+// Wizard State
+let currentWizStep = 1;
 
 // ── Authentication Functions ──
 
@@ -47,13 +47,11 @@ window.loginWithEmail = async function() {
   if (!email || !pass) return alert("Please fill all fields");
 
   try {
-    // Try sign in
     let result;
     try {
       result = await signInWithEmailAndPassword(auth, email, pass);
     } catch (err) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        // Auto-signup if user doesn't exist (assuming invalid-cred means not yet registered for simplicity in demo)
         result = await createUserWithEmailAndPassword(auth, email, pass);
       } else {
         throw err;
@@ -70,73 +68,148 @@ async function checkUserRegistration(user) {
   const userDoc = await getDoc(doc(db, "users", user.uid));
   
   if (userDoc.exists()) {
-    // User already registered — go to dashboard
     hideAuth();
     loadUserData(user.uid);
-    // Explicitly navigate now that we are ready
     if (window.navigateTo) window.navigateTo('dashboard');
   } else {
-    // New user — show profile setup stage
+    // Start Cinematic Onboarding
     switchStage('loginStage', 'profileStage');
-    
-    // Pre-fill display name if available from Google
-    if (user.displayName) {
-      document.getElementById('regDisplayName').value = user.displayName;
+    if (user.displayName) document.getElementById('regDisplayName').value = user.displayName;
+  }
+}
+
+// ── Onboarding Wizard Logic ──
+
+window.setGender = function(val) {
+  document.getElementById('regGender').value = val;
+  document.querySelectorAll('.gender-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.val === val);
+  });
+};
+
+window.setWizOption = function(group, val, el) {
+  const hiddenId = group === 'activity' ? 'regActivity' : 'regGoal';
+  document.getElementById(hiddenId).value = val;
+  document.querySelectorAll(`.option-card[data-group="${group}"]`).forEach(c => {
+    c.classList.remove('active');
+  });
+  el.classList.add('active');
+};
+
+window.wizStep = function(delta) {
+  const nextStep = currentWizStep + delta;
+  
+  // Validation
+  if (delta > 0 && !validateStep(currentWizStep)) return;
+  
+  if (nextStep > 5) {
+    completeRegistration();
+    return;
+  }
+  
+  if (nextStep < 1) return;
+
+  // Change UI
+  document.querySelector(`.wiz-step[data-step="${currentWizStep}"]`).classList.remove('active');
+  document.querySelector(`.wiz-step[data-step="${nextStep}"]`).classList.add('active');
+  
+  currentWizStep = nextStep;
+  updateWizProgress();
+};
+
+function validateStep(step) {
+  if (step === 1) {
+    const u = document.getElementById('regUsername').value.trim();
+    const n = document.getElementById('regDisplayName').value.trim();
+    if (u.length < 3 || !n) {
+      alert("Please enter a valid handle and name");
+      return false;
+    }
+    if (!/^[a-z0-9_]+$/.test(u.toLowerCase())) {
+        alert("Handle can only contain a-z, 0-9, and underscores");
+        return false;
     }
   }
+  if (step === 2) {
+    const age = document.getElementById('regAge').value;
+    if (!age || age < 10) {
+      alert("Please enter a valid age");
+      return false;
+    }
+  }
+  if (step === 3) {
+    const h = document.getElementById('regHeight').value;
+    const w = document.getElementById('regWeight').value;
+    if (!h || !w) {
+      alert("Please enter both height and weight");
+      return false;
+    }
+  }
+  return true;
+}
+
+function updateWizProgress() {
+  const pct = (currentWizStep / 5) * 100;
+  document.getElementById('wizProgress').style.width = pct + '%';
+  document.getElementById('currStep').textContent = currentWizStep;
+  document.getElementById('wizPrev').style.visibility = currentWizStep === 1 ? 'hidden' : 'visible';
+  document.getElementById('wizNext').textContent = currentWizStep === 5 ? 'Finalize 🔥' : 'Next Step';
 }
 
 window.completeRegistration = async function() {
   const username = document.getElementById('regUsername').value.trim().toLowerCase();
-  const displayName = document.getElementById('regDisplayName').value.trim();
   
-  if (!username || !displayName) return alert("Please fill all fields");
-  if (username.length < 3) return alert("Username too short");
-  if (!/^[a-z0-9_]+$/.test(username)) return alert("Username can only contain a-z, 0-9, and underscores");
-
   try {
-    // Check uniqueness
+    // Check username uniqueness
     const usernameDoc = await getDoc(doc(db, "usernames", username));
     if (usernameDoc.exists()) {
-      return alert("This handle is already taken. Try another!");
+      currentWizStep = 1; // Back to start
+      wizStep(0); 
+      return alert("Handle taken! Back to step 1 to choose another.");
     }
 
-    const { uid, email, phoneNumber } = auth.currentUser;
+    const { uid, email } = auth.currentUser;
     
-    // 1. Create username mapping
-    await setDoc(doc(db, "usernames", username), { uid });
-    
-    // 2. Create user profile
+    // Gather all wizard data
     const profile = {
       uid,
-      email: email || null,
-      phoneNumber: phoneNumber || null,
       username,
-      displayName,
+      displayName: document.getElementById('regDisplayName').value.trim(),
+      age: parseInt(document.getElementById('regAge').value),
+      gender: document.getElementById('regGender').value,
+      height: parseFloat(document.getElementById('regHeight').value),
+      weight: parseFloat(document.getElementById('regWeight').value),
+      activityLevel: parseFloat(document.getElementById('regActivity').value),
+      goal: document.getElementById('regGoal').value,
+      email: email || null,
       createdAt: new Date().toISOString()
     };
     
-    // 3. Migrate local data if exists
-    const localData = JSON.parse(localStorage.getItem('nutritionTracker') || '{}');
+    await setDoc(doc(db, "usernames", username), { uid });
+    
+    // Initial State Structure
     const cloudData = {
-      profile: { ...profile, ...(localData.profile || {}) },
-      meals: localData.meals || {},
-      workouts: localData.workouts || {},
-      weightLog: localData.weightLog || [],
-      waterLog: localData.waterLog || {},
-      daySplits: localData.daySplits || {}
+      profile,
+      meals: {},
+      workouts: {},
+      weightLog: [{ date: new Date().toISOString().split('T')[0], weight: profile.weight }],
+      waterLog: {},
+      daySplits: {}
     };
 
     await setDoc(doc(db, "users", uid), cloudData);
     
-    alert("Welcome to the cloud, " + displayName + "!");
+    alert("Onboarding complete! Welcome, " + profile.displayName);
     hideAuth();
     loadUserData(uid);
+    if (window.navigateTo) window.navigateTo('dashboard');
   } catch (error) {
     console.error("Registration failed:", error);
-    alert("Error completing registration: " + error.message);
+    alert(error.message);
   }
 };
+
+// ── Core Utils ──
 
 function switchStage(fromId, toId) {
   document.getElementById(fromId).classList.remove('active');
@@ -150,13 +223,11 @@ function hideAuth() {
 }
 
 window.logout = async function() {
-  if (confirm("Are you sure you want to logout?")) {
+  if (confirm("Logout from FuelTrack?")) {
     await signOut(auth);
     location.reload();
   }
 };
-
-// ── Cloud Sync Logic ──
 
 async function loadUserData(uid) {
   onSnapshot(doc(db, "users", uid), (doc) => {
@@ -173,28 +244,28 @@ async function loadUserData(uid) {
 function updateProfileUI(profile) {
   const profileName = document.getElementById('profileName');
   if (profileName) profileName.textContent = profile.displayName || "User";
-  
   const profileSub = document.querySelector('.profile-subtitle');
   if (profileSub) profileSub.textContent = "@" + profile.username;
+  
+  // Also update sidebar footer
+  const sbName = document.getElementById('sidebarUserName');
+  if (sbName) sbName.textContent = profile.displayName;
+  const sbGoal = document.querySelector('.sidebar-user-goal');
+  if (sbGoal) sbGoal.textContent = `${profile.goal.toUpperCase()} · ${profile.gender === 'male' ? 'KINGS' : 'QUEENS'} MODE`;
 }
 
 window.syncToCloud = async function(data) {
   if (!auth.currentUser) return;
   try {
     await updateDoc(doc(db, "users", auth.currentUser.uid), data);
-  } catch (e) {
-    console.error("Cloud sync fail:", e);
-  }
+  } catch (e) { console.error("Cloud sync fail:", e); }
 };
 
-// ── Initial State Listen ──
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    currentUser = user;
     checkUserRegistration(user);
     document.body.classList.add('is-authenticated');
   } else {
-    currentUser = null;
     document.getElementById('authOverlay').classList.add('active');
     document.body.classList.remove('is-authenticated');
   }

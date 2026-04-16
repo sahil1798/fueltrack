@@ -263,24 +263,125 @@
         <p class="auth-footer-text">Secure cloud sync for your health data.</p>
       </div>
 
-      <!-- Registration Stage (Handle & Name) -->
-      <div id="profileStage" class="auth-card">
-        <div class="auth-header">
-          <div class="auth-logo-float">🧬</div>
-          <h2 class="auth-title">Identify Yourself</h2>
-          <p class="auth-tagline">Claim your unique FuelTrack handle</p>
-        </div>
-
-        <div class="auth-body">
-          <div class="handle-input-container">
-            <span class="handle-at">@</span>
-            <input type="text" id="regUsername" class="auth-input handle-field" placeholder="username" maxlength="20">
+      <!-- Registration Stage (Multi-Step Wizard) -->
+      <div id="profileStage" class="auth-card wizard-view">
+        <div class="wizard-header">
+          <div class="wizard-progress">
+             <div class="progress-bar" id="wizProgress" style="width: 20%"></div>
           </div>
-          <input type="text" id="regDisplayName" class="auth-input" placeholder="Display Name">
+          <p class="wizard-step-indicator"><span id="currStep">1</span> / 5</p>
         </div>
 
-        <div class="auth-actions" style="margin-top: 2rem">
-          <button class="btn-primary auth-submit" onclick="completeRegistration()">Start Building 🔥</button>
+        <!-- Step 1: Identity -->
+        <div class="wiz-step active" data-step="1">
+          <div class="auth-header">
+            <h2 class="auth-title">Claim Identity</h2>
+            <p class="auth-tagline">Set your handle and public name</p>
+          </div>
+          <div class="auth-body">
+            <div class="handle-input-container">
+              <span class="handle-at">@</span>
+              <input type="text" id="regUsername" class="auth-input handle-field" placeholder="username" maxlength="20">
+            </div>
+            <input type="text" id="regDisplayName" class="auth-input" placeholder="Display Name">
+          </div>
+        </div>
+
+        <!-- Step 2: Basics -->
+        <div class="wiz-step" data-step="2">
+          <div class="auth-header">
+            <h2 class="auth-title">The Basics</h2>
+            <p class="auth-tagline">Age and Gender for precision tracking</p>
+          </div>
+          <div class="auth-body">
+            <input type="number" id="regAge" class="auth-input" placeholder="Age (e.g. 24)" min="10" max="100">
+            <div class="gender-selector">
+              <div class="gender-card active" data-val="male" onclick="setGender('male')">
+                <span class="gender-icon">♂️</span>
+                <span>Male</span>
+              </div>
+              <div class="gender-card" data-val="female" onclick="setGender('female')">
+                <span class="gender-icon">♀️</span>
+                <span>Female</span>
+              </div>
+            </div>
+            <input type="hidden" id="regGender" value="male">
+          </div>
+        </div>
+
+        <!-- Step 3: Body -->
+        <div class="wiz-step" data-step="3">
+          <div class="auth-header">
+            <h2 class="auth-title">Physique</h2>
+            <p class="auth-tagline">Enter your current height and weight</p>
+          </div>
+          <div class="auth-body">
+            <div style="display: flex; gap: var(--space-md)">
+              <div style="flex: 1">
+                <label class="input-label">HEIGHT (CM)</label>
+                <input type="number" id="regHeight" class="auth-input" placeholder="175">
+              </div>
+              <div style="flex: 1">
+                <label class="input-label">WEIGHT (KG)</label>
+                <input type="number" id="regWeight" class="auth-input" placeholder="72">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Activity -->
+        <div class="wiz-step" data-step="4">
+          <div class="auth-header">
+            <h2 class="auth-title">Lifestyle</h2>
+            <p class="auth-tagline">How active is your standard week?</p>
+          </div>
+          <div class="auth-body grid-list">
+            <div class="option-card" data-group="activity" data-val="1.2" onclick="setWizOption('activity', 1.2, this)">
+              <div class="opt-title">Sedentary</div>
+              <div class="opt-desc">Desk job, little exercise</div>
+            </div>
+            <div class="option-card active" data-group="activity" data-val="1.375" onclick="setWizOption('activity', 1.375, this)">
+              <div class="opt-title">Lightly Active</div>
+              <div class="opt-desc">Light exercise 1-3 days/week</div>
+            </div>
+            <div class="option-card" data-group="activity" data-val="1.55" onclick="setWizOption('activity', 1.55, this)">
+              <div class="opt-title">Moderately Active</div>
+              <div class="opt-desc">Active exercise 3-5 days/week</div>
+            </div>
+            <div class="option-card" data-group="activity" data-val="1.725" onclick="setWizOption('activity', 1.725, this)">
+              <div class="opt-title">Very Active</div>
+              <div class="opt-desc">Hard exercise daily</div>
+            </div>
+            <input type="hidden" id="regActivity" value="1.375">
+          </div>
+        </div>
+
+        <!-- Step 5: Goal -->
+        <div class="wiz-step" data-step="5">
+          <div class="auth-header">
+            <h2 class="auth-title">Ambition</h2>
+            <p class="auth-tagline">What are we building towards?</p>
+          </div>
+          <div class="auth-body grid-list">
+            <div class="option-card" data-group="goal" data-val="cut" onclick="setWizOption('goal', 'cut', this)">
+              <div class="opt-title">🔥 Cut</div>
+              <div class="opt-desc">Lose body fat, get lean</div>
+            </div>
+            <div class="option-card active" data-group="goal" data-val="maintain" onclick="setWizOption('goal', 'maintain', this)">
+              <div class="opt-title">⚖️ Maintain</div>
+              <div class="opt-desc">Stay healthy, consistent</div>
+            </div>
+            <div class="option-card" data-group="goal" data-val="bulk" onclick="setWizOption('goal', 'bulk', this)">
+              <div class="opt-title">🚀 Bulk</div>
+              <div class="opt-desc">Build muscle, gain strength</div>
+            </div>
+            <input type="hidden" id="regGoal" value="maintain">
+          </div>
+        </div>
+
+        <div class="wizard-footer">
+          <button class="btn-text" id="wizPrev" onclick="wizStep(-1)" style="visibility: hidden">Back</button>
+          <button class="btn-primary auth-submit" style="width: 140px" id="wizNext" onclick="wizStep(1)">Next Step</button>
         </div>
       </div>
     </div>
