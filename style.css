@@ -2874,24 +2874,33 @@ body {
     background: #000 !important;
     padding: 0 !important;
     align-items: flex-start !important;
+    flex-direction: column !important; /* Force Single Column */
+    overflow-x: hidden !important;
   }
 
   .auth-card {
     height: 100vh !important;
     width: 100vw !important;
+    min-width: 100vw !important;
     max-width: 100vw !important;
     border-radius: 0 !important;
     border: none !important;
-    padding: 4rem 1.5rem !important;
-    display: flex;
+    padding: 2rem 1.25rem !important;
+    display: none; /* Hide all by default */
     flex-direction: column;
     justify-content: flex-start !important;
     background: #000 !important;
     overflow-y: auto;
+    flex: none !important;
+  }
+
+  /* Only show the ACTIVE stage */
+  .auth-card.active {
+    display: flex !important;
   }
 
   .auth-brand h1 {
-    font-size: 2.8rem !important;
+    font-size: 2.2rem !important;
     margin-bottom: 0.5rem !important;
   }
 
