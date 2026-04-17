@@ -2039,8 +2039,9 @@ function toggleMobileSidebar() {
   overlay.classList.toggle('active');
 }
 
-// ── PWA Install ──
+// ── PWA Installation Logic ──
 let deferredPrompt = null;
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;

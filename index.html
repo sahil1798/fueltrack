@@ -81,11 +81,39 @@
     <!-- ── Mobile Overlay ── -->
     <div class="mobile-overlay" onclick="toggleMobileSidebar()"></div>
 
-    <!-- ── Main Content ── -->
-    <main class="main-content" id="mainContent">
-      <!-- Rendered by JS -->
+    <!-- Application Shell -->
+  <div class="main-wrapper" id="mainWrapper">
+    <main class="content-area" id="mainContent">
+      <!-- Pages will be injected here -->
     </main>
+  </div>
 
+  <!-- Cinematic Install Overlay -->
+  <div id="installOverlay" class="install-overlay">
+    <div class="install-card">
+      <div class="install-app-icon">🔥</div>
+      <h1>Install FuelTrack Pro</h1>
+      <p>Transform this site into a full-screen mobile application on your home screen.</p>
+      
+      <div class="install-benefits">
+        <div class="benefit-item">
+          <span class="benefit-icon">✓</span>
+          <span>Professional Full-Screen Mode</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✓</span>
+          <span>Fast, Offline-Ready Access</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✓</span>
+          <span>Native Home Screen Icon</span>
+        </div>
+      </div>
+
+      <button class="btn-install" onclick="installApp()">Get Native App</button>
+      <button class="btn-skip" onclick="hideInstallOverlay()">Maybe Later</button>
+    </div>
+  </div>
     <!-- ── Mobile Bottom Nav ── -->
     <nav class="mobile-bottom-nav" id="mobileBottomNav">
       <div class="bottom-nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')" id="mNavDash">
@@ -229,46 +257,43 @@
   </style>
 
   <!-- Auth Overlay (Aurora 2.0) -->
-  <div class="auth-wrapper active" id="authOverlay">
-    <div class="aurora-container">
-      <div class="aurora-blob a-1"></div>
-      <div class="aurora-blob a-2"></div>
-      <div class="aurora-blob a-3"></div>
-    </div>
-
-    <div class="auth-content">
-      <div id="loginStage" class="auth-card active">
-        <div class="auth-header">
-          <div class="auth-logo-float">🔥</div>
-          <h1 class="auth-title">FuelTrack</h1>
-          <p class="auth-tagline">Your personal fitness cloud</p>
+  <div id="authOverlay" class="auth-wrapper active">
+    <!-- Login Stage -->
+    <div id="loginStage" class="auth-card active">
+      <div class="auth-brand">
+        <div class="auth-logo">🔥</div>
+        <h1>FuelTrack</h1>
+        <p>Ignite Your Fitness Journey</p>
+      </div>
+      
+      <div class="auth-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="athlete@fueltrack.com">
         </div>
-
-        <div class="auth-actions">
-          <button class="btn-social google" onclick="loginWithGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/btn_google_light_normal.svg" alt="Google">
-            <span>Continue with Google</span>
-          </button>
-          
-          <div class="auth-divider">
-            <span>or email</span>
-          </div>
-
-          <div class="email-login-form">
-            <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
-            <input type="password" id="loginPass" class="auth-input" placeholder="Password">
-            <button class="btn-primary auth-submit" onclick="loginWithEmail()">Sign In / Sign Up</button>
-          </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPass" class="form-input" placeholder="••••••••">
         </div>
-
-        <p class="auth-footer-text">Secure cloud sync for your health data.</p>
+        <button class="btn btn-primary" style="width:100%" onclick="loginWithEmail()">Enter Dashboard</button>
+        
+        <div class="auth-divider"><span>OR</span></div>
+        
+        <button class="btn btn-secondary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:var(--space-md)" onclick="loginWithGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+          Sign in with Google
+        </button>
       </div>
 
-      <!-- Registration Stage (Multi-Step Wizard) -->
-      <div id="profileStage" class="auth-card wizard-view">
-        <div class="wizard-header">
-          <div class="onboarding-footer" style="padding:0">
-            <button class="btn btn-primary" onclick="window.location.reload(true)" style="width:100%">Reload Dashboard</button>
+      <div class="onboarding-footer" style="padding:0">
+        <button class="btn btn-secondary btn-sm" onclick="forceNuclearReset()" style="width:100%;margin-top:var(--space-md);opacity:0.6">🔧 Emergency Repair App</button>
+      </div>
+    </div>
+
+    <!-- Registration Stage (Multi-Step Wizard) -->
+    <div id="profileStage" class="auth-card wizard-view">
+      <div class="wizard-header">
+    <button class="btn btn-primary" onclick="window.location.reload(true)" style="width:100%">Reload Dashboard</button>
             <button class="btn btn-secondary btn-sm" onclick="forceNuclearReset()" style="width:100%;margin-top:var(--space-md);opacity:0.6">🔧 Emergency Repair App</button>
           </div>
           <div class="wizard-progress">
