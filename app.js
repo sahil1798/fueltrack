@@ -100,6 +100,8 @@ function loadState() {
       APP.workouts = data.workouts || {};
       APP.weightLog = data.weightLog || [];
       APP.waterLog = data.waterLog || {};
+      APP.stepLog = data.stepLog || {};
+      APP.customActivities = data.customActivities || [];
       APP.daySplits = data.daySplits || {};
     } catch {
       initDefaults();
@@ -120,6 +122,8 @@ function initDefaults() {
   APP.workouts = {};
   APP.weightLog = [{ date: dateKey(), weight: 67 }];
   APP.waterLog = {};
+  APP.stepLog = {};
+  APP.customActivities = [];
   APP.daySplits = {};
 }
 
@@ -212,26 +216,94 @@ function getMealCals(key, mealType) {
   return m[mealType].reduce((s, e) => s + (e.calories || 0), 0);
 }
 
+// ── Step Tracking ──
+function getSteps(key) { return APP.stepLog[key] || 0; }
+
+function addSteps(count) {
+  const k = dateKey();
+  APP.stepLog[k] = (APP.stepLog[k] || 0) + count;
+  saveState();
+  APP.targets = calcTargets(APP.profile, getDailyActiveCals(k));
+  renderCurrentPage();
+}
+
+function setSteps(count) {
+  const k = dateKey();
+  APP.stepLog[k] = count;
+  saveState();
+  APP.targets = calcTargets(APP.profile, getDailyActiveCals(k));
+  renderCurrentPage();
+}
+
+// ── Performance Helpers ──
+function getDailyActiveCals(key) {
+  let activeTotal = 0;
+  
+  // 1. Calories from Steps (approx 0.04 kcal / step)
+  const steps = APP.stepLog[key] || 0;
+  activeTotal += steps * 0.04;
+  
+  // 2. Calories from Logged Activities
+  const workouts = APP.workouts[key] || [];
+  workouts.forEach(w => {
+    if (w.caloriesBurned) activeTotal += w.caloriesBurned;
+  });
+  
+  return Math.round(activeTotal);
+}
+
 // ── Workout Helpers ──
 function getWorkouts(key) {
   return APP.workouts[key] || [];
 }
 
-function addWorkoutEntry(exerciseId, sets) {
+function addWorkoutEntry(exerciseId, sets, duration = 0) {
   const key = dateKey();
   if (!APP.workouts[key]) APP.workouts[key] = [];
-  const ex = EXERCISE_DATABASE.find(e => e.id === exerciseId);
+  
+  // Search in both DB and Custom Activities
+  let ex = EXERCISE_DATABASE.find(e => e.id === exerciseId);
+  if (!ex) ex = APP.customActivities.find(e => e.id === exerciseId);
   if (!ex) return;
+  
+  let caloriesBurned = 0;
+  if (ex.type === 'duration' && duration > 0) {
+    // Formula: MET * 3.5 * weight_kg / 200 * duration_min
+    const met = ex.met || 6.0;
+    caloriesBurned = Math.round(met * 3.5 * (APP.profile.weight || 70) / 200 * duration);
+  }
+
   APP.workouts[key].push({
     id: Date.now() + Math.random(),
     exerciseId,
     name: ex.name,
     muscle: ex.muscle,
-    equipment: ex.equipment,
-    sets: sets || [{ reps: 0, weight: 0 }],
+    equipment: ex.equipment || (ex.type === 'duration' ? 'Activity' : 'None'),
+    type: ex.type || 'strength',
+    sets: ex.type === 'strength' ? sets : null,
+    duration: ex.type === 'duration' ? duration : null,
+    caloriesBurned
   });
+  
   saveState();
+  APP.targets = calcTargets(APP.profile, getDailyActiveCals(key));
   renderCurrentPage();
+}
+
+function addCustomActivity(name, intensity) {
+  const metMap = { low: 3.0, moderate: 6.0, high: 9.0 };
+  const newActivity = {
+    id: 'custom_' + Date.now(),
+    name,
+    muscle: 'others',
+    equipment: 'Custom',
+    type: 'duration',
+    met: metMap[intensity] || 6.0
+  };
+  APP.customActivities.push(newActivity);
+  saveState();
+  showToast(`${name} added to your library!`, 'success');
+  return newActivity.id;
 }
 
 function removeWorkoutEntry(entryId) {
@@ -305,6 +377,10 @@ function getStreak() {
   return streak;
 }
 
+// Aurora Onboarding Wizard Configuration
+const WIZARD_TOTAL_STEPS = 6;
+let currentWizStep = 1;
+
 // ── Navigation ──
 function navigateTo(page) {
   APP.currentPage = page;
@@ -371,7 +447,7 @@ function renderDashboard(container) {
       <div class="stat-card calories">
         <div class="stat-card-label">🔥 Calories</div>
         <div class="stat-card-value">${totals.calories.toLocaleString()}</div>
-        <div class="stat-card-target">/ ${t.calories.toLocaleString()} target</div>
+        <div class="stat-card-target">/ ${(t.calories).toLocaleString()} <span style="font-size:0.6rem;opacity:0.7">(Incl. Active)</span></div>
         <div class="stat-card-bar"><div class="stat-card-bar-fill" style="width: ${Math.min(100, (totals.calories / t.calories) * 100)}%"></div></div>
       </div>
       <div class="stat-card protein">
@@ -426,11 +502,38 @@ function renderDashboard(container) {
           <div id="calorieRingRemaining" class="calorie-ring-remaining ${totals.calories <= t.calories ? 'positive' : 'negative'}">
             ${totals.calories <= t.calories ? (t.calories - totals.calories) + ' cal remaining' : Math.abs(t.calories - totals.calories) + ' cal over'}
           </div>
+          <div class="active-burn-badge">
+            <span class="active-burn-label">🏃 Active Burn Today</span>
+            <span class="active-burn-value">+${t.activeCals} kcal</span>
+          </div>
         </div>
       </div>
 
       <!-- Right Side: Workout + Water + Streak -->
       <div style="display:flex;flex-direction:column;gap:var(--space-md)">
+        <div class="card stride-hub">
+          <div class="card-header">
+            <span class="card-title">Stride Hub</span>
+            <span class="card-icon">👟</span>
+          </div>
+          <div class="stride-content">
+            <div class="stride-stats">
+              <div class="stride-value" id="dashStepCount">${getSteps(key).toLocaleString()}</div>
+              <div class="stride-label">of ${APP.profile.stepGoal?.toLocaleString() || '10,000'} steps</div>
+            </div>
+            <div class="stride-ring-sm">
+              <svg viewBox="0 0 40 40">
+                <circle class="stride-ring-bg" cx="20" cy="20" r="18"/>
+                <circle class="stride-ring-fill" cx="20" cy="20" r="18" style="stroke-dasharray: ${Math.min(113, (getSteps(key) / (APP.profile.stepGoal || 10000)) * 113)} 113"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stride-input-group">
+            <input type="number" id="stepInput" class="form-input" placeholder="Add steps...">
+            <button class="btn btn-primary btn-sm" onclick="addSteps(parseInt(document.getElementById('stepInput').value)||0)">Add</button>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-shine"></div>
           <div class="card-header">
@@ -1324,30 +1427,44 @@ function closeAddExerciseModal() {
 
 function renderExerciseSearchResults(query) {
   const resultsEl = document.getElementById('exerciseSearchResults');
-  let filtered = EXERCISE_DATABASE;
+  let filtered = [...EXERCISE_DATABASE, ...APP.customActivities];
   if (query.trim()) {
     const q = query.toLowerCase();
-    filtered = EXERCISE_DATABASE.filter(e =>
-      e.name.toLowerCase().includes(q) || e.muscle.toLowerCase().includes(q) || e.equipment.toLowerCase().includes(q)
+    filtered = filtered.filter(e =>
+      e.name.toLowerCase().includes(q) || (e.muscle && e.muscle.toLowerCase().includes(q)) || (e.equipment && e.equipment.toLowerCase().includes(q))
     );
   }
   if (exerciseSearchFilter) {
     filtered = filtered.filter(e => e.muscle === exerciseSearchFilter);
   }
 
-  resultsEl.innerHTML = filtered.map(ex => {
+  let html = filtered.map(ex => {
     const mg = MUSCLE_GROUPS.find(g => g.id === ex.muscle);
     return `
-    <div class="food-result-item" onclick="openSetLogger(${ex.id})" id="ex_${ex.id}">
+    <div class="food-result-item" onclick="openSetLogger('${ex.id}')" id="ex_${ex.id}">
       <div style="display:flex;align-items:center;gap:var(--space-sm)">
         <span class="workout-muscle-badge" style="background:${mg?.color || '#888'}22;color:${mg?.color || '#888'};border:1px solid ${mg?.color || '#888'}44;font-size:0.6rem;padding:3px 8px;border-radius:var(--radius-full)">${mg?.name || ex.muscle}</span>
       </div>
       <div class="food-result-info" style="flex:1">
-        <div class="food-result-name">${ex.name}</div>
-        <div class="food-result-serving">${ex.equipment}</div>
+        <div class="food-result-name">${ex.name} ${ex.id.toString().startsWith('custom') ? '<span style="font-size:0.6rem;opacity:0.5;margin-left:5px">CUSTOM</span>' : ''}</div>
+        <div class="food-result-serving">${ex.equipment || 'Activity'} • ${ex.type === 'duration' ? 'Duration' : 'Sets'}</div>
       </div>
     </div>`;
-  }).join('') || '<div class="meal-empty">No exercises found</div>';
+  }).join('');
+
+  if (!query.trim() && !exerciseSearchFilter) {
+    html = `
+      <div class="custom-activity-prompt" onclick="openCustomActivityModal()">
+        <div class="custom-activity-icon">✨</div>
+        <div class="custom-activity-text">
+          <strong>Can't find your sport?</strong>
+          <span>Add a custom activity like "Pickleball" or "Yoga"</span>
+        </div>
+      </div>
+    ` + html;
+  }
+
+  resultsEl.innerHTML = html || '<div class="meal-empty">No exercises found</div>';
 }
 
 function filterExerciseByMuscle(muscleId, el) {
@@ -1363,8 +1480,15 @@ let pendingSets = [{ reps: 10, weight: 0 }];
 
 function openSetLogger(exerciseId) {
   closeAddExerciseModal();
-  pendingExercise = EXERCISE_DATABASE.find(e => e.id === exerciseId);
-  pendingSets = [{ reps: 10, weight: 0 }];
+  pendingExercise = EXERCISE_DATABASE.find(e => e.id == exerciseId) || APP.customActivities.find(a => a.id == exerciseId);
+  if (!pendingExercise) return;
+  
+  if (pendingExercise.type === 'duration') {
+    pendingSets = []; 
+  } else {
+    pendingSets = [{ reps: 10, weight: 0 }];
+  }
+  
   renderSetLogger();
   document.getElementById('setLoggerModal').classList.add('active');
 }
@@ -1376,26 +1500,50 @@ function closeSetLogger() {
 function renderSetLogger() {
   const modal = document.getElementById('setLoggerBody');
   const mg = MUSCLE_GROUPS.find(g => g.id === pendingExercise?.muscle);
-  modal.innerHTML = `
-    <div style="display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-lg)">
-      <span class="workout-muscle-badge" style="background:${mg?.color || '#888'}22;color:${mg?.color || '#888'};border:1px solid ${mg?.color || '#888'}44;padding:4px 12px;border-radius:var(--radius-full);font-size:0.75rem">${mg?.icon} ${mg?.name}</span>
-      <span style="font-weight:700;font-size:1.1rem">${pendingExercise?.name}</span>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:var(--space-sm)">
-      ${pendingSets.map((s, i) => `
-        <div style="display:flex;align-items:center;gap:var(--space-sm);padding:var(--space-sm);background:var(--bg-glass);border-radius:var(--radius-md)">
-          <span style="font-size:0.75rem;color:var(--text-muted);width:45px">Set ${i + 1}</span>
-          <input type="number" class="form-input" style="width:80px;padding:6px 8px;text-align:center" placeholder="kg" value="${s.weight || ''}" onchange="pendingSets[${i}].weight=parseFloat(this.value)||0" id="setWeight${i}">
-          <span style="font-size:0.75rem;color:var(--text-muted)">kg</span>
-          <span style="font-size:0.75rem;color:var(--text-muted)">×</span>
-          <input type="number" class="form-input" style="width:70px;padding:6px 8px;text-align:center" placeholder="reps" value="${s.reps || ''}" onchange="pendingSets[${i}].reps=parseInt(this.value)||0" id="setReps${i}">
-          <span style="font-size:0.75rem;color:var(--text-muted)">reps</span>
-          ${pendingSets.length > 1 ? `<button class="meal-item-delete" style="opacity:1" onclick="removeSet(${i})">✕</button>` : ''}
+  
+  if (pendingExercise.type === 'duration') {
+    modal.innerHTML = `
+      <div style="text-align:center;margin-bottom:var(--space-lg)">
+        <div style="font-size:3rem;margin-bottom:var(--space-sm)">${mg?.icon || '🏃'}</div>
+        <h3 style="margin:0">${pendingExercise.name}</h3>
+        <p style="color:var(--text-secondary);font-size:0.85rem">Log your activity duration</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration (Minutes)</label>
+        <div style="display:flex;align-items:center;gap:var(--space-md)">
+          <input type="number" class="form-input" id="actDuration" value="30" style="font-size:1.5rem;text-align:center;height:60px">
+          <span style="font-weight:700;color:var(--text-muted)">MIN</span>
         </div>
-      `).join('')}
-    </div>
-    <button class="btn btn-secondary btn-sm mt-md" onclick="addSet()" id="btnAddSet" style="width:100%">+ Add Set</button>
-  `;
+      </div>
+      <div style="margin-top:var(--space-lg);padding:var(--space-md);background:var(--bg-glass);border-radius:var(--radius-md);font-size:0.8rem;color:var(--text-secondary)">
+        ℹ️ Active calories will be calculated based on your weight and activity intensity.
+      </div>
+    `;
+    // Hide add set button if it exists
+    const addBtn = document.getElementById('btnAddSet');
+    if (addBtn) addBtn.style.display = 'none';
+  } else {
+    modal.innerHTML = `
+      <div style="display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-lg)">
+        <span class="workout-muscle-badge" style="background:${mg?.color || '#888'}22;color:${mg?.color || '#888'};border:1px solid ${mg?.color || '#888'}44;padding:4px 12px;border-radius:var(--radius-full);font-size:0.75rem">${mg?.icon} ${mg?.name}</span>
+        <span style="font-weight:700;font-size:1.1rem">${pendingExercise?.name}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-sm)">
+        ${pendingSets.map((s, i) => `
+          <div style="display:flex;align-items:center;gap:var(--space-sm);padding:var(--space-sm);background:var(--bg-glass);border-radius:var(--radius-md)">
+            <span style="font-size:0.75rem;color:var(--text-muted);width:45px">Set ${i + 1}</span>
+            <input type="number" class="form-input" style="width:80px;padding:6px 8px;text-align:center" placeholder="kg" value="${s.weight || ''}" onchange="pendingSets[${i}].weight=parseFloat(this.value)||0" id="setWeight${i}">
+            <span style="font-size:0.75rem;color:var(--text-muted)">kg</span>
+            <span style="font-size:0.75rem;color:var(--text-muted)">×</span>
+            <input type="number" class="form-input" style="width:70px;padding:6px 8px;text-align:center" placeholder="reps" value="${s.reps || ''}" onchange="pendingSets[${i}].reps=parseInt(this.value)||0" id="setReps${i}">
+            <span style="font-size:0.75rem;color:var(--text-muted)">reps</span>
+            ${pendingSets.length > 1 ? `<button class="meal-item-delete" style="opacity:1" onclick="removeSet(${i})">✕</button>` : ''}
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn btn-secondary btn-sm mt-md" onclick="addSet()" id="btnAddSet" style="width:100%">+ Add Set</button>
+    `;
+  }
 }
 
 function addSet() {
@@ -1411,14 +1559,21 @@ function removeSet(i) {
 
 function confirmExercise() {
   if (!pendingExercise) return;
-  // Read latest values from inputs
-  pendingSets.forEach((s, i) => {
-    const wEl = document.getElementById(`setWeight${i}`);
-    const rEl = document.getElementById(`setReps${i}`);
-    if (wEl) s.weight = parseFloat(wEl.value) || 0;
-    if (rEl) s.reps = parseInt(rEl.value) || 0;
-  });
-  addWorkoutEntry(pendingExercise.id, [...pendingSets]);
+  
+  if (pendingExercise.type === 'duration') {
+    const duration = parseInt(document.getElementById('actDuration').value) || 0;
+    addWorkoutEntry(pendingExercise.id, null, duration);
+  } else {
+    // Read latest values from inputs
+    pendingSets.forEach((s, i) => {
+      const wEl = document.getElementById(`setWeight${i}`);
+      const rEl = document.getElementById(`setReps${i}`);
+      if (wEl) s.weight = parseFloat(wEl.value) || 0;
+      if (rEl) s.reps = parseInt(rEl.value) || 0;
+    });
+    addWorkoutEntry(pendingExercise.id, [...pendingSets]);
+  }
+  
   closeSetLogger();
   showToast(`${pendingExercise.name} logged!`, 'success');
 }
@@ -1465,6 +1620,32 @@ function installPWA() {
     if (res.outcome === 'accepted') showToast('App installed!', 'success');
     deferredPrompt = null;
   });
+}
+
+// ── Custom Activity UI ──
+function openCustomActivityModal() {
+  document.getElementById('customActivityModal').classList.add('active');
+  document.getElementById('custActName').value = '';
+}
+
+function closeCustomActivityModal() {
+  document.getElementById('customActivityModal').classList.remove('active');
+}
+
+function selectCustIntensity(val, el) {
+  document.querySelectorAll('#custIntensityGrid .option-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('custActIntensity').value = val;
+}
+
+function submitCustomActivity() {
+  const name = document.getElementById('custActName').value.trim();
+  const intensity = document.getElementById('custActIntensity').value;
+  if (!name) return showToast('Please enter a name', 'error');
+  
+  const id = addCustomActivity(name, intensity);
+  closeCustomActivityModal();
+  openSetLogger(id); // Immediately open logger for the new activity
 }
 
 // ── Init ──

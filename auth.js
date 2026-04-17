@@ -25,7 +25,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-// Wizard State
+// ── Wizard State ──
+const WIZARD_TOTAL_STEPS = 6;
 let currentWizStep = 1;
 
 // ── Authentication Functions ──
@@ -181,6 +182,7 @@ window.completeRegistration = async function() {
       weight: parseFloat(document.getElementById('regWeight').value),
       activityLevel: parseFloat(document.getElementById('regActivity').value),
       goal: document.getElementById('regGoal').value,
+      stepGoal: parseInt(document.getElementById('regStepGoal').value) || 10000,
       email: email || null,
       createdAt: new Date().toISOString()
     };

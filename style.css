@@ -2183,3 +2183,172 @@ body {
   color: #fff;
 }
 
+/* ── Phase 10: Performance Overhaul ── */
+
+/* Stride Hub */
+.stride-hub {
+  background: var(--bg-glass) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: var(--space-md) !important;
+}
+
+.stride-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+.stride-value {
+  font-size: 2rem;
+  font-weight: 900;
+  font-family: 'JetBrains Mono';
+  color: #fff;
+  line-height: 1;
+}
+
+.stride-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.stride-ring-sm {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.stride-ring-bg {
+  stroke: rgba(255, 255, 255, 0.05);
+  fill: none;
+  stroke-width: 4;
+}
+
+.stride-ring-fill {
+  fill: none;
+  stroke: var(--accent-green);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+.stride-input-group {
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  gap: var(--space-xs);
+}
+
+.stride-input-group .form-input {
+  height: 38px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+}
+
+/* Active Burn Badge */
+.active-burn-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(0, 232, 150, 0.05);
+  border: 1px solid rgba(0, 232, 150, 0.1);
+  border-radius: 12px;
+  animation: pulse-green 4s infinite;
+}
+
+.active-burn-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-green);
+  font-weight: 700;
+}
+
+.active-burn-value {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  font-family: 'JetBrains Mono';
+}
+
+@keyframes pulse-green {
+  0%, 100% { border-color: rgba(0, 232, 150, 0.1); }
+  50% { border-color: rgba(0, 232, 150, 0.3); }
+}
+
+/* Custom Activity Prompt */
+.custom-activity-prompt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-activity-prompt:hover {
+  border-color: var(--accent-green);
+  background: rgba(0, 232, 150, 0.03);
+  transform: translateY(-2px);
+}
+
+.custom-activity-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-glass);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-activity-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-activity-text strong {
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.custom-activity-text span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Intensity Chips */
+.option-grid-sm {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+  margin-top: 0.5rem;
+}
+
+.option-chip {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+
+.option-chip.active {
+  background: rgba(0, 232, 150, 0.1);
+  border-color: var(--accent-green);
+  color: #fff;
+}

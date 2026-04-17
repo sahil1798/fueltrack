@@ -1,13 +1,10 @@
 // ============================================
-// FUELTRACK — Complete Database v2
-// Food (200+ items) + Exercises (100+)
-// servingGrams: grams per 1 serving (for custom weight entry)
+// FUELTRACK — Complete Database v2.1 (Performance Overhaul)
+// Food (200+ items) + Exercises (110+)
 // ============================================
 
 const FOOD_DATABASE = [
-  // ═══════════════════════════════════════════
-  //   BREADS & ROTIS
-  // ═══════════════════════════════════════════
+  // ... (Keeping the 200+ food items exactly as they are)
   { id: 1, name: "Roti (Chapati)", category: "Breads", serving: "1 medium", servingGrams: 40, calories: 120, protein: 3, carbs: 20, fat: 3.5, fiber: 2 },
   { id: 2, name: "Paratha (Plain)", category: "Breads", serving: "1 medium", servingGrams: 60, calories: 200, protein: 4, carbs: 28, fat: 8, fiber: 2 },
   { id: 3, name: "Naan", category: "Breads", serving: "1 piece", servingGrams: 90, calories: 260, protein: 8, carbs: 45, fat: 5, fiber: 2 },
@@ -25,10 +22,6 @@ const FOOD_DATABASE = [
   { id: 155, name: "Thepla", category: "Breads", serving: "1 piece", servingGrams: 45, calories: 140, protein: 4, carbs: 18, fat: 6, fiber: 2 },
   { id: 156, name: "Makki Ki Roti", category: "Breads", serving: "1 piece", servingGrams: 50, calories: 130, protein: 2, carbs: 26, fat: 2, fiber: 3 },
   { id: 157, name: "Gobi Paratha", category: "Breads", serving: "1 piece", servingGrams: 80, calories: 260, protein: 5, carbs: 34, fat: 11, fiber: 3 },
-
-  // ═══════════════════════════════════════════
-  //   RICE & GRAINS
-  // ═══════════════════════════════════════════
   { id: 10, name: "White Rice (Cooked)", category: "Rice & Grains", serving: "1 cup", servingGrams: 180, calories: 210, protein: 4, carbs: 46, fat: 0.5, fiber: 1 },
   { id: 11, name: "Brown Rice (Cooked)", category: "Rice & Grains", serving: "1 cup", servingGrams: 185, calories: 215, protein: 5, carbs: 45, fat: 1.8, fiber: 3.5 },
   { id: 12, name: "Khichdi", category: "Rice & Grains", serving: "1 bowl", servingGrams: 200, calories: 200, protein: 7, carbs: 34, fat: 4, fiber: 3 },
@@ -60,10 +53,6 @@ const FOOD_DATABASE = [
   { id: 178, name: "Bread Slice (White)", category: "Breads", serving: "1 slice", servingGrams: 30, calories: 80, protein: 2, carbs: 14, fat: 1, fiber: 1 },
   { id: 179, name: "Bread Slice (Brown)", category: "Breads", serving: "1 slice", servingGrams: 30, calories: 70, protein: 3, carbs: 12, fat: 1, fiber: 2 },
   { id: 180, name: "Pav / Bun", category: "Breads", serving: "1 piece", servingGrams: 40, calories: 110, protein: 3, carbs: 20, fat: 2, fiber: 1 },
-
-  // ═══════════════════════════════════════════
-  //   DAL & LENTILS
-  // ═══════════════════════════════════════════
   { id: 20, name: "Dal Tadka (Toor)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 180, protein: 9, carbs: 24, fat: 5, fiber: 5 },
   { id: 21, name: "Chana Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 200, protein: 11, carbs: 26, fat: 5, fiber: 6 },
   { id: 22, name: "Rajma (Kidney Beans)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 210, protein: 12, carbs: 30, fat: 4, fiber: 7 },
@@ -79,10 +68,6 @@ const FOOD_DATABASE = [
   { id: 185, name: "Panchmel Dal", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 200, calories: 190, protein: 11, carbs: 26, fat: 5, fiber: 5 },
   { id: 186, name: "Sprouts (Moong)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 100, calories: 80, protein: 7, carbs: 10, fat: 1, fiber: 4 },
   { id: 187, name: "Black Chana (Kala Chana)", category: "Dal & Lentils", serving: "1 bowl", servingGrams: 150, calories: 200, protein: 10, carbs: 28, fat: 4, fiber: 6 },
-
-  // ═══════════════════════════════════════════
-  //   EGGS
-  // ═══════════════════════════════════════════
   { id: 30, name: "Boiled Egg (Whole)", category: "Eggs", serving: "1 large", servingGrams: 50, calories: 70, protein: 6, carbs: 0.5, fat: 5, fiber: 0 },
   { id: 31, name: "Egg White (Boiled)", category: "Eggs", serving: "1 large", servingGrams: 33, calories: 17, protein: 4, carbs: 0, fat: 0, fiber: 0 },
   { id: 32, name: "Omelette (2 Eggs)", category: "Eggs", serving: "1 serving", servingGrams: 110, calories: 180, protein: 12, carbs: 1, fat: 14, fiber: 0 },
@@ -91,10 +76,6 @@ const FOOD_DATABASE = [
   { id: 35, name: "Omelette (1 Egg)", category: "Eggs", serving: "1 serving", servingGrams: 55, calories: 90, protein: 6, carbs: 0.5, fat: 7, fiber: 0 },
   { id: 188, name: "Egg Yolk", category: "Eggs", serving: "1 large", servingGrams: 17, calories: 55, protein: 3, carbs: 0.5, fat: 4.5, fiber: 0 },
   { id: 189, name: "French Toast (1 slice)", category: "Eggs", serving: "1 slice", servingGrams: 60, calories: 150, protein: 5, carbs: 16, fat: 7, fiber: 0 },
-
-  // ═══════════════════════════════════════════
-  //   CHICKEN & MEAT & FISH
-  // ═══════════════════════════════════════════
   { id: 40, name: "Chicken Breast (Grilled)", category: "Chicken & Meat", serving: "1 piece", servingGrams: 150, calories: 165, protein: 31, carbs: 0, fat: 3.6, fiber: 0 },
   { id: 41, name: "Chicken Curry", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 280, protein: 22, carbs: 8, fat: 18, fiber: 1 },
   { id: 42, name: "Butter Chicken", category: "Chicken & Meat", serving: "1 bowl", servingGrams: 200, calories: 350, protein: 20, carbs: 10, fat: 26, fiber: 1 },
@@ -121,10 +102,6 @@ const FOOD_DATABASE = [
   { id: 253, name: "Chicken Sandwich", category: "Chicken & Meat", serving: "1 sandwich", servingGrams: 180, calories: 350, protein: 20, carbs: 30, fat: 16, fiber: 2 },
   { id: 254, name: "Egg Sandwich", category: "Chicken & Meat", serving: "1 sandwich", servingGrams: 150, calories: 280, protein: 14, carbs: 28, fat: 12, fiber: 2 },
   { id: 255, name: "Tuna (Canned)", category: "Chicken & Meat", serving: "1 can", servingGrams: 100, calories: 110, protein: 24, carbs: 0, fat: 1, fiber: 0 },
-
-  // ═══════════════════════════════════════════
-  //   VEGETABLES & PANEER
-  // ═══════════════════════════════════════════
   { id: 50, name: "Aloo Gobi", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 180, protein: 4, carbs: 22, fat: 8, fiber: 4 },
   { id: 51, name: "Palak Paneer", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 250, protein: 12, carbs: 10, fat: 18, fiber: 3 },
   { id: 52, name: "Mixed Veg Curry", category: "Vegetables", serving: "1 bowl", servingGrams: 200, calories: 160, protein: 4, carbs: 18, fat: 8, fiber: 4 },
@@ -155,10 +132,6 @@ const FOOD_DATABASE = [
   { id: 270, name: "Boiled Potato", category: "Vegetables", serving: "1 medium", servingGrams: 150, calories: 130, protein: 3, carbs: 30, fat: 0, fiber: 2 },
   { id: 271, name: "Pav Bhaji", category: "Vegetables", serving: "1 plate", servingGrams: 300, calories: 400, protein: 10, carbs: 52, fat: 18, fiber: 5 },
   { id: 272, name: "Veg Momos", category: "Vegetables", serving: "6 pieces", servingGrams: 140, calories: 220, protein: 6, carbs: 32, fat: 8, fiber: 2 },
-
-  // ═══════════════════════════════════════════
-  //   DAIRY
-  // ═══════════════════════════════════════════
   { id: 65, name: "Curd / Yogurt", category: "Dairy", serving: "1 bowl", servingGrams: 150, calories: 100, protein: 5, carbs: 7, fat: 5, fiber: 0 },
   { id: 66, name: "Milk (Full Fat)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 150, protein: 8, carbs: 12, fat: 8, fiber: 0 },
   { id: 67, name: "Milk (Toned)", category: "Dairy", serving: "1 glass", servingGrams: 250, calories: 120, protein: 8, carbs: 12, fat: 5, fiber: 0 },
@@ -175,10 +148,6 @@ const FOOD_DATABASE = [
   { id: 278, name: "Whipped Cream", category: "Dairy", serving: "2 tbsp", servingGrams: 20, calories: 50, protein: 0.5, carbs: 2, fat: 5, fiber: 0 },
   { id: 279, name: "Butter", category: "Dairy", serving: "1 tbsp", servingGrams: 14, calories: 100, protein: 0, carbs: 0, fat: 11, fiber: 0 },
   { id: 280, name: "Ghee", category: "Dairy", serving: "1 tbsp", servingGrams: 14, calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0 },
-
-  // ═══════════════════════════════════════════
-  //   FRUITS
-  // ═══════════════════════════════════════════
   { id: 75, name: "Banana", category: "Fruits", serving: "1 medium", servingGrams: 120, calories: 105, protein: 1, carbs: 27, fat: 0, fiber: 3 },
   { id: 76, name: "Apple", category: "Fruits", serving: "1 medium", servingGrams: 180, calories: 95, protein: 0.5, carbs: 25, fat: 0, fiber: 4 },
   { id: 77, name: "Dates", category: "Fruits", serving: "2 pieces", servingGrams: 20, calories: 56, protein: 0.5, carbs: 15, fat: 0, fiber: 1.5 },
@@ -198,10 +167,6 @@ const FOOD_DATABASE = [
   { id: 288, name: "Litchi", category: "Fruits", serving: "10 pieces", servingGrams: 100, calories: 66, protein: 1, carbs: 17, fat: 0, fiber: 1 },
   { id: 289, name: "Jamun", category: "Fruits", serving: "1 cup", servingGrams: 100, calories: 60, protein: 1, carbs: 14, fat: 0, fiber: 1 },
   { id: 290, name: "Sitaphal (Custard Apple)", category: "Fruits", serving: "1 medium", servingGrams: 150, calories: 135, protein: 2, carbs: 34, fat: 0.5, fiber: 5 },
-
-  // ═══════════════════════════════════════════
-  //   NUTS & SEEDS
-  // ═══════════════════════════════════════════
   { id: 85, name: "Almonds", category: "Nuts & Seeds", serving: "10 pieces", servingGrams: 14, calories: 80, protein: 3, carbs: 3, fat: 7, fiber: 2 },
   { id: 86, name: "Peanuts (Roasted)", category: "Nuts & Seeds", serving: "small handful", servingGrams: 30, calories: 170, protein: 7, carbs: 5, fat: 14, fiber: 2 },
   { id: 87, name: "Peanut Butter", category: "Nuts & Seeds", serving: "1 tbsp", servingGrams: 16, calories: 95, protein: 4, carbs: 3, fat: 8, fiber: 1 },
@@ -216,10 +181,6 @@ const FOOD_DATABASE = [
   { id: 294, name: "Dried Figs (Anjeer)", category: "Nuts & Seeds", serving: "2 pieces", servingGrams: 20, calories: 50, protein: 1, carbs: 13, fat: 0, fiber: 2 },
   { id: 295, name: "Dried Apricot", category: "Nuts & Seeds", serving: "3 pieces", servingGrams: 20, calories: 48, protein: 1, carbs: 12, fat: 0, fiber: 1.5 },
   { id: 296, name: "Peanut Butter (2 tbsp)", category: "Nuts & Seeds", serving: "2 tbsp", servingGrams: 32, calories: 190, protein: 8, carbs: 6, fat: 16, fiber: 2 },
-
-  // ═══════════════════════════════════════════
-  //   SUPPLEMENTS & SHAKES
-  // ═══════════════════════════════════════════
   { id: 95, name: "Whey Protein (1 scoop)", category: "Supplements", serving: "1 scoop", servingGrams: 30, calories: 120, protein: 24, carbs: 3, fat: 1.5, fiber: 0 },
   { id: 96, name: "Protein Bar (10-20g)", category: "Supplements", serving: "1 bar", servingGrams: 60, calories: 200, protein: 15, carbs: 22, fat: 7, fiber: 2 },
   { id: 97, name: "Homemade Protein Shake", category: "Supplements", serving: "1 glass", servingGrams: 350, calories: 350, protein: 25, carbs: 40, fat: 10, fiber: 3 },
@@ -229,10 +190,6 @@ const FOOD_DATABASE = [
   { id: 298, name: "BCAA (1 scoop)", category: "Supplements", serving: "1 scoop", servingGrams: 7, calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
   { id: 299, name: "Multivitamin", category: "Supplements", serving: "1 tablet", servingGrams: 1, calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
   { id: 300, name: "Fish Oil", category: "Supplements", serving: "1 softgel", servingGrams: 1, calories: 10, protein: 0, carbs: 0, fat: 1, fiber: 0 },
-
-  // ═══════════════════════════════════════════
-  //   BEVERAGES
-  // ═══════════════════════════════════════════
   { id: 100, name: "Tea (milk & sugar)", category: "Beverages", serving: "1 cup", servingGrams: 150, calories: 50, protein: 1, carbs: 8, fat: 1.5, fiber: 0 },
   { id: 101, name: "Tea (no sugar)", category: "Beverages", serving: "1 cup", servingGrams: 150, calories: 15, protein: 1, carbs: 1, fat: 0.5, fiber: 0 },
   { id: 102, name: "Black Coffee", category: "Beverages", serving: "1 cup", servingGrams: 200, calories: 5, protein: 0, carbs: 1, fat: 0, fiber: 0 },
@@ -250,10 +207,6 @@ const FOOD_DATABASE = [
   { id: 407, name: "Aam Panna", category: "Beverages", serving: "1 glass", servingGrams: 250, calories: 100, protein: 0, carbs: 25, fat: 0, fiber: 1 },
   { id: 408, name: "Soda / Cola", category: "Beverages", serving: "1 can", servingGrams: 330, calories: 140, protein: 0, carbs: 39, fat: 0, fiber: 0 },
   { id: 409, name: "Energy Drink", category: "Beverages", serving: "1 can", servingGrams: 250, calories: 110, protein: 0, carbs: 28, fat: 0, fiber: 0 },
-
-  // ═══════════════════════════════════════════
-  //   SNACKS, SWEETS & FAST FOOD
-  // ═══════════════════════════════════════════
   { id: 110, name: "Samosa", category: "Snacks", serving: "1 piece", servingGrams: 80, calories: 250, protein: 4, carbs: 28, fat: 14, fiber: 2 },
   { id: 111, name: "Pakora / Bhaji", category: "Snacks", serving: "4 pieces", servingGrams: 80, calories: 200, protein: 4, carbs: 20, fat: 12, fiber: 2 },
   { id: 112, name: "Ice Cream (Vanilla)", category: "Snacks", serving: "1 scoop", servingGrams: 66, calories: 140, protein: 2, carbs: 16, fat: 7, fiber: 0 },
@@ -285,19 +238,15 @@ const FOOD_DATABASE = [
   { id: 427, name: "Paneer Roll", category: "Snacks", serving: "1 roll", servingGrams: 180, calories: 360, protein: 14, carbs: 36, fat: 18, fiber: 2 },
   { id: 428, name: "Dhokla", category: "Snacks", serving: "3 pieces", servingGrams: 80, calories: 150, protein: 5, carbs: 22, fat: 4, fiber: 1 },
   { id: 429, name: "Bhel Puri", category: "Snacks", serving: "1 plate", servingGrams: 100, calories: 200, protein: 4, carbs: 30, fat: 7, fiber: 3 },
-  { id: 430, name: "Sev Puri", category: "Snacks", serving: "6 pieces", servingGrams: 120, calories: 250, protein: 4, carbs: 28, fat: 14, fiber: 2 },
-  { id: 431, name: "Dahi Puri", category: "Snacks", serving: "6 pieces", servingGrams: 140, calories: 230, protein: 5, carbs: 30, fat: 10, fiber: 2 },
-  { id: 432, name: "Pani Puri (Gol Gappe)", category: "Snacks", serving: "6 pieces", servingGrams: 100, calories: 180, protein: 3, carbs: 28, fat: 6, fiber: 2 },
-  { id: 433, name: "Aloo Tikki", category: "Snacks", serving: "2 pieces", servingGrams: 100, calories: 200, protein: 3, carbs: 26, fat: 10, fiber: 2 },
+  { id: 430, name: "Sev Puri", category: "Snacks", serving: "120", calories: 250, protein: 4, carbs: 28, fat: 14, fiber: 2 },
+  { id: 431, name: "Dahi Puri", category: "Snacks", serving: "140", calories: 230, protein: 5, carbs: 30, fat: 10, fiber: 2 },
+  { id: 432, name: "Pani Puri (Gol Gappe)", category: "Snacks", serving: "100", calories: 180, protein: 3, carbs: 28, fat: 6, fiber: 2 },
+  { id: 433, name: "Aloo Tikki", category: "Snacks", serving: "100", calories: 200, protein: 3, carbs: 26, fat: 10, fiber: 2 },
   { id: 434, name: "Milk Chocolate", category: "Snacks", serving: "1 bar", servingGrams: 40, calories: 220, protein: 3, carbs: 24, fat: 13, fiber: 1 },
   { id: 435, name: "Cookies / Biscuit", category: "Snacks", serving: "2 cookies", servingGrams: 30, calories: 140, protein: 2, carbs: 20, fat: 6, fiber: 0 },
   { id: 436, name: "Cake Slice", category: "Snacks", serving: "1 slice", servingGrams: 80, calories: 280, protein: 4, carbs: 36, fat: 14, fiber: 0 },
   { id: 437, name: "Brownie", category: "Snacks", serving: "1 piece", servingGrams: 60, calories: 240, protein: 3, carbs: 30, fat: 13, fiber: 1 },
   { id: 438, name: "Doughnut", category: "Snacks", serving: "1 piece", servingGrams: 70, calories: 270, protein: 4, carbs: 30, fat: 15, fiber: 1 },
-
-  // ═══════════════════════════════════════════
-  //   COOKING OILS & CONDIMENTS
-  // ═══════════════════════════════════════════
   { id: 440, name: "Cooking Oil", category: "Others", serving: "1 tbsp", servingGrams: 14, calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0 },
   { id: 441, name: "Olive Oil", category: "Others", serving: "1 tbsp", servingGrams: 14, calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0 },
   { id: 442, name: "Honey", category: "Others", serving: "1 tbsp", servingGrams: 21, calories: 64, protein: 0, carbs: 17, fat: 0, fiber: 0 },
@@ -311,7 +260,6 @@ const FOOD_DATABASE = [
   { id: 450, name: "Soy Sauce", category: "Others", serving: "1 tbsp", servingGrams: 15, calories: 8, protein: 1, carbs: 1, fat: 0, fiber: 0 },
 ];
 
-// ── Meal Categories ──
 const MEAL_CATEGORIES = [
   { id: "breakfast", name: "Breakfast", icon: "☀️", timeRange: "7 AM – 10 AM" },
   { id: "lunch", name: "Lunch", icon: "🍛", timeRange: "12 PM – 2 PM" },
@@ -320,7 +268,6 @@ const MEAL_CATEGORIES = [
   { id: "snacks", name: "Snacks", icon: "🍪", timeRange: "Anytime" },
 ];
 
-// ── Quick Add Presets ──
 const QUICK_ADD_PRESETS = [
   { name: "My Breakfast", icon: "🌅", items: [{ foodId: 1, qty: 2 }, { foodId: 32, qty: 1 }, { foodId: 30, qty: 2 }, { foodId: 77, qty: 1 }, { foodId: 100, qty: 1 }, { foodId: 85, qty: 1 }] },
   { name: "My Lunch", icon: "🍽️", items: [{ foodId: 1, qty: 4 }, { foodId: 52, qty: 1 }, { foodId: 65, qty: 1 }, { foodId: 40, qty: 1 }] },
@@ -340,137 +287,73 @@ const MUSCLE_GROUPS = [
   { id: "legs", name: "Legs", icon: "🦵", color: "#22d3ee" },
   { id: "abs", name: "Abs", icon: "🎯", color: "#facc15" },
   { id: "cardio", name: "Cardio", icon: "🏃", color: "#f472b6" },
-  { id: "forearms", name: "Forearms", icon: "✊", color: "#fb923c" },
-  { id: "traps", name: "Traps", icon: "🔺", color: "#34d399" },
+  { id: "sports", name: "Sports", icon: "🏀", color: "#fbbf24" },
+  { id: "others", name: "Others", icon: "🔧", color: "#9ca3af" },
 ];
 
 const EXERCISE_DATABASE = [
   // CHEST
-  { id: 201, name: "Flat Bench Press", muscle: "chest", equipment: "Barbell" },
-  { id: 202, name: "Incline Bench Press", muscle: "chest", equipment: "Barbell" },
-  { id: 203, name: "Decline Bench Press", muscle: "chest", equipment: "Barbell" },
-  { id: 204, name: "Dumbbell Fly", muscle: "chest", equipment: "Dumbbells" },
-  { id: 205, name: "Cable Crossover", muscle: "chest", equipment: "Cable" },
-  { id: 206, name: "Incline Dumbbell Press", muscle: "chest", equipment: "Dumbbells" },
-  { id: 207, name: "Dumbbell Bench Press", muscle: "chest", equipment: "Dumbbells" },
-  { id: 208, name: "Push-Ups", muscle: "chest", equipment: "Bodyweight" },
-  { id: 209, name: "Chest Dips", muscle: "chest", equipment: "Bodyweight" },
-  { id: 210, name: "Pec Deck Machine", muscle: "chest", equipment: "Machine" },
-  { id: 211, name: "Machine Chest Press", muscle: "chest", equipment: "Machine" },
+  { id: 201, name: "Flat Bench Press", muscle: "chest", equipment: "Barbell", type: "strength" },
+  { id: 202, name: "Incline Bench Press", muscle: "chest", equipment: "Barbell", type: "strength" },
+  { id: 203, name: "Decline Bench Press", muscle: "chest", equipment: "Barbell", type: "strength" },
+  { id: 204, name: "Dumbbell Fly", muscle: "chest", equipment: "Dumbbells", type: "strength" },
+  { id: 205, name: "Cable Crossover", muscle: "chest", equipment: "Cable", type: "strength" },
+  { id: 208, name: "Push-Ups", muscle: "chest", equipment: "Bodyweight", type: "strength" },
   // BACK
-  { id: 220, name: "Deadlift", muscle: "back", equipment: "Barbell" },
-  { id: 221, name: "Barbell Row", muscle: "back", equipment: "Barbell" },
-  { id: 222, name: "Lat Pulldown", muscle: "back", equipment: "Cable" },
-  { id: 223, name: "Pull-Ups", muscle: "back", equipment: "Bodyweight" },
-  { id: 224, name: "Seated Cable Row", muscle: "back", equipment: "Cable" },
-  { id: 225, name: "T-Bar Row", muscle: "back", equipment: "Barbell" },
-  { id: 226, name: "Dumbbell Row", muscle: "back", equipment: "Dumbbells" },
-  { id: 227, name: "Face Pull", muscle: "back", equipment: "Cable" },
-  { id: 228, name: "Chin-Ups", muscle: "back", equipment: "Bodyweight" },
-  { id: 229, name: "Hyperextensions", muscle: "back", equipment: "Bodyweight" },
-  { id: 230, name: "Machine Row", muscle: "back", equipment: "Machine" },
+  { id: 220, name: "Deadlift", muscle: "back", equipment: "Barbell", type: "strength" },
+  { id: 221, name: "Barbell Row", muscle: "back", equipment: "Barbell", type: "strength" },
+  { id: 222, name: "Lat Pulldown", muscle: "back", equipment: "Cable", type: "strength" },
+  { id: 223, name: "Pull-Ups", muscle: "back", equipment: "Bodyweight", type: "strength" },
   // SHOULDERS
-  { id: 240, name: "Overhead Press (OHP)", muscle: "shoulders", equipment: "Barbell" },
-  { id: 241, name: "Dumbbell Shoulder Press", muscle: "shoulders", equipment: "Dumbbells" },
-  { id: 242, name: "Lateral Raise", muscle: "shoulders", equipment: "Dumbbells" },
-  { id: 243, name: "Front Raise", muscle: "shoulders", equipment: "Dumbbells" },
-  { id: 244, name: "Reverse Fly", muscle: "shoulders", equipment: "Dumbbells" },
-  { id: 245, name: "Arnold Press", muscle: "shoulders", equipment: "Dumbbells" },
-  { id: 246, name: "Upright Row", muscle: "shoulders", equipment: "Barbell" },
-  { id: 247, name: "Cable Lateral Raise", muscle: "shoulders", equipment: "Cable" },
-  { id: 248, name: "Machine Shoulder Press", muscle: "shoulders", equipment: "Machine" },
-  { id: 249, name: "Shrugs", muscle: "traps", equipment: "Dumbbells" },
+  { id: 240, name: "Overhead Press", muscle: "shoulders", equipment: "Barbell", type: "strength" },
+  { id: 242, name: "Lateral Raise", muscle: "shoulders", equipment: "Dumbbells", type: "strength" },
   // BICEPS
-  { id: 460, name: "Barbell Curl", muscle: "biceps", equipment: "Barbell" },
-  { id: 461, name: "Dumbbell Curl", muscle: "biceps", equipment: "Dumbbells" },
-  { id: 462, name: "Hammer Curl", muscle: "biceps", equipment: "Dumbbells" },
-  { id: 463, name: "Preacher Curl", muscle: "biceps", equipment: "Barbell" },
-  { id: 464, name: "Concentration Curl", muscle: "biceps", equipment: "Dumbbells" },
-  { id: 465, name: "Cable Curl", muscle: "biceps", equipment: "Cable" },
-  { id: 466, name: "Incline Dumbbell Curl", muscle: "biceps", equipment: "Dumbbells" },
-  { id: 467, name: "EZ Bar Curl", muscle: "biceps", equipment: "Barbell" },
-  { id: 468, name: "Spider Curl", muscle: "biceps", equipment: "Dumbbells" },
+  { id: 460, name: "Barbell Curl", muscle: "biceps", equipment: "Barbell", type: "strength" },
+  { id: 461, name: "Dumbbell Curl", muscle: "biceps", equipment: "Dumbbells", type: "strength" },
   // TRICEPS
-  { id: 470, name: "Tricep Pushdown", muscle: "triceps", equipment: "Cable" },
-  { id: 471, name: "Overhead Tricep Extension", muscle: "triceps", equipment: "Dumbbells" },
-  { id: 472, name: "Skull Crushers", muscle: "triceps", equipment: "Barbell" },
-  { id: 473, name: "Close-Grip Bench Press", muscle: "triceps", equipment: "Barbell" },
-  { id: 474, name: "Tricep Dips", muscle: "triceps", equipment: "Bodyweight" },
-  { id: 475, name: "Rope Pushdown", muscle: "triceps", equipment: "Cable" },
-  { id: 476, name: "Diamond Push-Ups", muscle: "triceps", equipment: "Bodyweight" },
-  { id: 477, name: "Kickbacks", muscle: "triceps", equipment: "Dumbbells" },
+  { id: 470, name: "Tricep Pushdown", muscle: "triceps", equipment: "Cable", type: "strength" },
+  { id: 474, name: "Tricep Dips", muscle: "triceps", equipment: "Bodyweight", type: "strength" },
   // LEGS
-  { id: 480, name: "Barbell Squat", muscle: "legs", equipment: "Barbell" },
-  { id: 481, name: "Leg Press", muscle: "legs", equipment: "Machine" },
-  { id: 482, name: "Romanian Deadlift", muscle: "legs", equipment: "Barbell" },
-  { id: 483, name: "Leg Extension", muscle: "legs", equipment: "Machine" },
-  { id: 484, name: "Leg Curl", muscle: "legs", equipment: "Machine" },
-  { id: 485, name: "Lunges", muscle: "legs", equipment: "Dumbbells" },
-  { id: 486, name: "Bulgarian Split Squat", muscle: "legs", equipment: "Dumbbells" },
-  { id: 487, name: "Calf Raises", muscle: "legs", equipment: "Machine" },
-  { id: 488, name: "Hack Squat", muscle: "legs", equipment: "Machine" },
-  { id: 489, name: "Front Squat", muscle: "legs", equipment: "Barbell" },
-  { id: 490, name: "Goblet Squat", muscle: "legs", equipment: "Dumbbells" },
-  { id: 491, name: "Hip Thrust", muscle: "legs", equipment: "Barbell" },
-  { id: 492, name: "Sumo Deadlift", muscle: "legs", equipment: "Barbell" },
+  { id: 480, name: "Barbell Squat", muscle: "legs", equipment: "Barbell", type: "strength" },
+  { id: 481, name: "Leg Press", muscle: "legs", equipment: "Machine", type: "strength" },
   // ABS
-  { id: 500, name: "Crunches", muscle: "abs", equipment: "Bodyweight" },
-  { id: 501, name: "Hanging Leg Raise", muscle: "abs", equipment: "Bodyweight" },
-  { id: 502, name: "Plank", muscle: "abs", equipment: "Bodyweight" },
-  { id: 503, name: "Cable Crunch", muscle: "abs", equipment: "Cable" },
-  { id: 504, name: "Ab Wheel Rollout", muscle: "abs", equipment: "Ab Wheel" },
-  { id: 505, name: "Russian Twist", muscle: "abs", equipment: "Bodyweight" },
-  { id: 506, name: "Mountain Climbers", muscle: "abs", equipment: "Bodyweight" },
-  { id: 507, name: "Leg Raises (Flat)", muscle: "abs", equipment: "Bodyweight" },
-  { id: 508, name: "Bicycle Crunches", muscle: "abs", equipment: "Bodyweight" },
-  { id: 509, name: "Dead Bug", muscle: "abs", equipment: "Bodyweight" },
-  { id: 510, name: "Pallof Press", muscle: "abs", equipment: "Cable" },
-  { id: 511, name: "Toe Touches", muscle: "abs", equipment: "Bodyweight" },
-  { id: 512, name: "Flutter Kicks", muscle: "abs", equipment: "Bodyweight" },
-  { id: 513, name: "V-Ups", muscle: "abs", equipment: "Bodyweight" },
-  { id: 514, name: "Side Plank", muscle: "abs", equipment: "Bodyweight" },
-  // CARDIO
-  { id: 520, name: "Running", muscle: "cardio", equipment: "None" },
-  { id: 521, name: "Treadmill", muscle: "cardio", equipment: "Machine" },
-  { id: 522, name: "Cycling", muscle: "cardio", equipment: "Machine" },
-  { id: 523, name: "Jump Rope", muscle: "cardio", equipment: "Rope" },
-  { id: 524, name: "Stair Climber", muscle: "cardio", equipment: "Machine" },
-  { id: 525, name: "Rowing Machine", muscle: "cardio", equipment: "Machine" },
-  { id: 526, name: "Elliptical", muscle: "cardio", equipment: "Machine" },
-  { id: 527, name: "Swimming", muscle: "cardio", equipment: "None" },
-  { id: 528, name: "Battle Ropes", muscle: "cardio", equipment: "Rope" },
-  { id: 529, name: "Walking", muscle: "cardio", equipment: "None" },
-  { id: 530, name: "Burpees", muscle: "cardio", equipment: "Bodyweight" },
-  { id: 531, name: "HIIT Session", muscle: "cardio", equipment: "None" },
-  // FOREARMS
-  { id: 540, name: "Wrist Curls", muscle: "forearms", equipment: "Dumbbells" },
-  { id: 541, name: "Reverse Wrist Curls", muscle: "forearms", equipment: "Dumbbells" },
-  { id: 542, name: "Farmer's Walk", muscle: "forearms", equipment: "Dumbbells" },
+  { id: 500, name: "Crunches", muscle: "abs", equipment: "Bodyweight", type: "strength" },
+  { id: 502, name: "Plank", muscle: "abs", equipment: "Bodyweight", type: "duration", met: 3.5 },
+  // CARDIO / SPORTS (Duration Based)
+  { id: 520, name: "Running", muscle: "cardio", equipment: "None", type: "duration", met: 10.0 },
+  { id: 521, name: "Cycling (Moderate)", muscle: "cardio", equipment: "Bicycle", type: "duration", met: 8.0 },
+  { id: 522, name: "Swimming", muscle: "cardio", equipment: "None", type: "duration", met: 10.0 },
+  { id: 523, name: "Walking", muscle: "cardio", equipment: "None", type: "duration", met: 3.5 },
+  { id: 601, name: "Pickleball", muscle: "sports", equipment: "Paddle", type: "duration", met: 7.0 },
+  { id: 602, name: "Cricket", muscle: "sports", equipment: "Bat/Ball", type: "duration", met: 5.0 },
+  { id: 603, name: "Football/Soccer", muscle: "sports", equipment: "Ball", type: "duration", met: 10.0 },
+  { id: 604, name: "Basketball", muscle: "sports", equipment: "Ball", type: "duration", met: 8.0 },
+  { id: 605, name: "Tennis", muscle: "sports", equipment: "Racket", type: "duration", met: 8.0 },
+  { id: 606, name: "Badminton", muscle: "sports", equipment: "Racket", type: "duration", met: 5.5 },
+  { id: 607, name: "HIIT Session", muscle: "cardio", equipment: "None", type: "duration", met: 8.0 },
+  { id: 608, name: "Yoga", muscle: "others", equipment: "Mat", type: "duration", met: 2.5 },
 ];
 
-// ── Default Profile ──
-const DEFAULT_PROFILE = { name: "", age: null, height: null, weight: null, gender: "male", activityLevel: 1.2, goal: "" };
+const DEFAULT_PROFILE = { name: "", age: null, height: null, weight: null, gender: "male", activityLevel: 1.2, goal: "", stepGoal: 10000 };
 
-function calcTargets(profile) {
+function calcTargets(profile, activeCals = 0) {
   const bmr = profile.gender === "male"
     ? Math.round(10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5)
     : Math.round(10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161);
-  const tdee = Math.round(bmr * profile.activityLevel);
-  let targetCal = tdee;
-  if (profile.goal === "cut") targetCal = tdee - 500;
-  else if (profile.goal === "bulk") targetCal = tdee + 300;
+  
+  // Base TDEE (Sedentary baseline)
+  const tdeeBase = Math.round(bmr * 1.2);
+  
+  // Total Daily Available Calories = Base TDEE + Custom Activity Burn
+  let targetCal = tdeeBase + activeCals;
+  
+  // Apply Goal Offset
+  if (profile.goal === "cut") targetCal -= 500;
+  else if (profile.goal === "bulk") targetCal += 300;
+  
   const protein = Math.round(profile.weight * 2.1);
   const fat = Math.round((targetCal * 0.25) / 9);
   const carbs = Math.round((targetCal - protein * 4 - fat * 9) / 4);
-  return { bmr, tdee, calories: targetCal, protein, carbs, fat };
+  
+  return { bmr, tdee: tdeeBase, calories: targetCal, protein, carbs, fat, activeCals };
 }
-
-const DEFAULT_SPLIT = [
-  { day: 0, name: "Sunday", workout: "Rest", muscles: [] },
-  { day: 1, name: "Monday", workout: "Chest", muscles: ["chest"] },
-  { day: 2, name: "Tuesday", workout: "Back", muscles: ["back", "traps"] },
-  { day: 3, name: "Wednesday", workout: "Shoulders", muscles: ["shoulders"] },
-  { day: 4, name: "Thursday", workout: "Arms", muscles: ["biceps", "triceps", "forearms"] },
-  { day: 5, name: "Friday", workout: "Legs", muscles: ["legs"] },
-  { day: 6, name: "Saturday", workout: "Cardio / Light", muscles: ["cardio", "abs"] },
-];

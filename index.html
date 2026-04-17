@@ -379,10 +379,62 @@
           </div>
         </div>
 
+        <!-- Step 6: Stride Hub -->
+        <div class="wiz-step" data-step="6">
+          <div class="auth-header">
+            <h2 class="auth-title">Daily Stride</h2>
+            <p class="auth-tagline">What is your daily step target?</p>
+          </div>
+          <div class="auth-body grid-list">
+            <div class="option-card" data-group="stepGoal" data-val="5000" onclick="setWizOption('stepGoal', 5000, this)">
+              <div class="opt-title">Bronze</div>
+              <div class="opt-desc">5,000 steps - Light activity</div>
+            </div>
+            <div class="option-card active" data-group="stepGoal" data-val="10000" onclick="setWizOption('stepGoal', 10000, this)">
+              <div class="opt-title">Gold Standard</div>
+              <div class="opt-desc">10,000 steps - Health & Fat loss</div>
+            </div>
+            <div class="option-card" data-group="stepGoal" data-val="15000" onclick="setWizOption('stepGoal', 15000, this)">
+              <div class="opt-title">Elite</div>
+              <div class="opt-desc">15,000 steps - Total Athlete</div>
+            </div>
+            <input type="hidden" id="regStepGoal" value="10000">
+          </div>
+        </div>
+
         <div class="wizard-footer">
           <button class="btn-text" id="wizPrev" onclick="wizStep(-1)" style="visibility: hidden">Back</button>
           <button class="btn-primary auth-submit" style="width: 140px" id="wizNext" onclick="wizStep(1)">Next Step</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Activity Maker Modal -->
+  <div class="modal-overlay" id="customActivityModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">✨ Custom Activity</h2>
+        <button class="modal-close" onclick="closeCustomActivityModal()">✕</button>
+      </div>
+      <div class="modal-body" id="customActivityBody">
+        <div class="form-group">
+          <label class="form-label">Name of Sport/Activity</label>
+          <input type="text" id="custActName" class="form-input" placeholder="e.g. Pickleball, Yoga, Bowling">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Intensity Level</label>
+          <div class="option-grid-sm" id="custIntensityGrid">
+            <div class="option-chip" data-val="low" onclick="selectCustIntensity('low', this)">Low</div>
+            <div class="option-chip active" data-val="moderate" onclick="selectCustIntensity('moderate', this)">Moderate</div>
+            <div class="option-chip" data-val="high" onclick="selectCustIntensity('high', this)">High</div>
+          </div>
+          <input type="hidden" id="custActIntensity" value="moderate">
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:var(--space-md)">
+          Intensity helps us estimate calories. "High" is for competitive sports, "Low" is for light sessions.
+        </div>
+        <button class="btn btn-primary" onclick="submitCustomActivity()" style="width:100%;margin-top:var(--space-lg)">Create Activity</button>
       </div>
     </div>
   </div>
