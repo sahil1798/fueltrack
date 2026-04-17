@@ -69,6 +69,8 @@ async function checkUserRegistration(user) {
   const userDoc = await getDoc(doc(db, "users", user.uid));
   
   if (userDoc.exists()) {
+    // Registered User: Go Straight to Dashboard
+    window.isUserRegistered = true; 
     hideAuth();
     loadUserData(user.uid);
     safeNavigate('dashboard');
@@ -220,6 +222,15 @@ function switchStage(fromId, toId) {
 
 function hideAuth() {
   const wrapper = document.getElementById('authOverlay');
+  if (!wrapper) return;
+  
+  // Instant hide for registered users to prevent flickering
+  if (window.isUserRegistered) {
+    wrapper.style.display = 'none';
+    wrapper.classList.remove('active');
+    return;
+  }
+
   wrapper.classList.remove('active');
   setTimeout(() => wrapper.style.display = 'none', 800);
 }

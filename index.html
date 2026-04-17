@@ -293,14 +293,11 @@
     <!-- Registration Stage (Multi-Step Wizard) -->
     <div id="profileStage" class="auth-card wizard-view">
       <div class="wizard-header">
-    <button class="btn btn-primary" onclick="window.location.reload(true)" style="width:100%">Reload Dashboard</button>
-            <button class="btn btn-secondary btn-sm" onclick="forceNuclearReset()" style="width:100%;margin-top:var(--space-md);opacity:0.6">🔧 Emergency Repair App</button>
-          </div>
-          <div class="wizard-progress">
-             <div class="progress-bar" id="wizProgress" style="width: 20%"></div>
-          </div>
-          <p class="wizard-step-indicator"><span id="currStep">1</span> / 5</p>
+        <div class="wizard-progress">
+          <div class="progress-bar" id="wizProgress" style="width: 20%"></div>
         </div>
+        <p class="wizard-step-indicator"><span id="currStep">1</span> / 5</p>
+      </div>
 
         <!-- Step 1: Identity -->
         <div class="wiz-step active" data-step="1">

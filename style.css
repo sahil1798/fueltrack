@@ -2867,3 +2867,80 @@ body {
   cursor: pointer;
   text-decoration: underline;
 }
+
+/* ── Elite Mobile Auth Reconstruction ── */
+@media (max-width: 600px) {
+  .auth-wrapper {
+    background: #000 !important;
+    padding: 0 !important;
+    align-items: flex-start !important;
+  }
+
+  .auth-card {
+    height: 100vh !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 4rem 1.5rem !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    background: #000 !important;
+    overflow-y: auto;
+  }
+
+  .auth-brand h1 {
+    font-size: 2.8rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .auth-brand p {
+    font-size: 1.1rem !important;
+    margin-bottom: 3rem !important;
+  }
+
+  .form-group label {
+    font-size: 0.8rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+  }
+
+  .form-input {
+    height: 65px !important;
+    font-size: 1.2rem !important;
+    background: #111 !important;
+    border: 1px solid #333 !important;
+    border-radius: 18px !important;
+  }
+
+  .btn-primary {
+    height: 65px !important;
+    font-size: 1.2rem !important;
+    font-weight: 900 !important;
+    border-radius: 18px !important;
+  }
+
+  /* Fix Wizard Header Clutter */
+  .wizard-header {
+    margin-bottom: 3rem !important;
+  }
+
+  .wizard-step-indicator {
+    font-size: 1.4rem !important;
+    font-weight: 900 !important;
+    color: var(--accent-green) !important;
+  }
+
+  .auth-title {
+    font-size: 2.5rem !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+  }
+
+  .wizard-footer {
+    margin-top: auto;
+    padding-bottom: 2rem;
+  }
+}
