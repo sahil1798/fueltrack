@@ -235,6 +235,16 @@ function getCoachAdvice() {
   const k = dateKey();
   const totals = getDayTotals(k);
   const targets = APP.targets;
+  
+  if (!targets) {
+    return { 
+      type: 'success', 
+      title: 'Welcome to FuelTrack! 👋', 
+      text: 'Set your goals in the Profile section to get personalized AI coaching and macro targets.', 
+      item: null 
+    };
+  }
+
   const remCals = targets.calories - totals.calories;
   const remPro = targets.protein - totals.protein;
   const hour = new Date().getHours();
@@ -648,7 +658,7 @@ function calcRPGAttributes() {
 
     // VIT: Nutrition Consistency
     const totals = getDayTotals(k);
-    if (totals.protein >= (APP.targets?.protein || 100) * 0.8) healthyMealDays++;
+    if (APP.targets && totals.protein >= APP.targets.protein * 0.8) healthyMealDays++;
   });
 
   return {
@@ -695,6 +705,22 @@ function renderCurrentPage() {
 
 // ── Dashboard ──
 function renderDashboard(container) {
+  if (!APP.profile || !APP.targets) {
+    container.innerHTML = `
+      <div class="page-header">
+        <h1>Welcome, Athlete!</h1>
+        <p class="page-subtitle">Setting up your engine...</p>
+      </div>
+      <div class="card p-xl" style="text-align:center">
+        <div style="font-size:3rem;margin-bottom:1rem">⏳</div>
+        <h3>Loading your profile...</h3>
+        <p style="color:var(--text-muted);margin-bottom:var(--space-lg)">If this takes too long, make sure you have finished your onboarding in the Profile section.</p>
+        <button class="btn btn-primary" onclick="navigateTo('profile')">Go to Profile</button>
+      </div>
+    `;
+    return;
+  }
+
   const key = dateKey();
   const totals = getDayTotals(key);
   const t = APP.targets;
