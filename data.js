@@ -334,6 +334,38 @@ const EXERCISE_DATABASE = [
   { id: 608, name: "Yoga", muscle: "others", equipment: "Mat", type: "duration", met: 2.5 },
 ];
 
+const MUSCLE_GROUPS = [
+  { id: 'chest', name: 'Chest', icon: '🏋️', color: '#ff4757' },
+  { id: 'back', name: 'Back', icon: '💪', color: '#2ed573' },
+  { id: 'shoulders', name: 'Shoulders', icon: '⚡', color: '#ffa502' },
+  { id: 'biceps', name: 'Biceps', icon: '💪', color: '#1e90ff' },
+  { id: 'triceps', name: 'Triceps', icon: '🔥', color: '#ff6b81' },
+  { id: 'legs', name: 'Legs', icon: '🦵', color: '#3742fa' },
+  { id: 'abs', name: 'Abs', icon: '🎯', color: '#2bcbba' },
+  { id: 'cardio', name: 'Cardio', icon: '🏃', color: '#747d8c' },
+  { id: 'sports', name: 'Sports', icon: '🏏', color: '#eccc68' },
+  { id: 'others', name: 'Others', icon: '🧘', color: '#a29bfe' }
+];
+
+const MUSCLE_SPLITS = [
+  { id: 'rest', name: 'Rest / Recovery', muscles: [] },
+  { id: 'push', name: 'Push (Chest/Shoulders/Tri)', muscles: ['chest', 'shoulders', 'triceps'] },
+  { id: 'pull', name: 'Pull (Back/Biceps)', muscles: ['back', 'biceps'] },
+  { id: 'legs', name: 'Legs / Abs', muscles: ['legs', 'abs'] },
+  { id: 'upper', name: 'Upper Body', muscles: ['chest', 'back', 'shoulders', 'biceps', 'triceps'] },
+  { id: 'lower', name: 'Lower Body', muscles: ['legs', 'abs'] },
+  { id: 'full', name: 'Full Body', muscles: ['chest', 'back', 'shoulders', 'legs', 'abs'] }
+];
+
+const XP_MAP = {
+  MEAL_LOG: 50,
+  WORKOUT_LOG: 100,
+  STEP_GOAL_HIT: 200,
+  WATER_GLASS: 10,
+  WEIGHT_LOG: 50,
+  ACTIVE_BURN_CAL: 0.1 // 1000 calories = 100 XP
+};
+
 const DEFAULT_PROFILE = { 
   name: "", 
   age: null, 
@@ -341,26 +373,18 @@ const DEFAULT_PROFILE = {
   weight: null, 
   gender: "male", 
   activityLevel: 1.2, 
-  goal: "", 
+  goal: "maintain", 
   stepGoal: 10000,
   rpg: {
     level: 1,
     xp: 0,
-    str: 0, // Strength: Based on lifting volume
-    agi: 0, // Agility: Based on steps/cardio
-    vit: 0  // Vitality: Based on nutrition consistency
+    str: 0, 
+    agi: 0, 
+    vit: 0  
   },
   aiSettings: {
     geminiKey: ""
   }
-};
-
-const XP_MAP = {
-  MEAL_LOG: 50,
-  WORKOUT_LOG: 100,
-  STEP_GOAL_HIT: 200,
-  WATER_GLASS: 10,
-  WEIGHT_LOG: 50
 };
 
 function calcTargets(profile, activeCals = 0) {

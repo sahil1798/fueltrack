@@ -8,12 +8,17 @@ const APP = {
   currentDate: new Date(),
   profile: null,
   targets: null,
-  meals: {},       // { "2026-04-16": { breakfast: [...], lunch: [...], ... } }
-  workouts: {},    // { "2026-04-16": [ { exerciseId, sets: [{reps, weight}], muscle } ] }
-  weightLog: [],   // [ { date, weight } ]
-  waterLog: {},    // { "2026-04-16": glasses }
-  isCloudLoaded: false, // Guard for cloud sync
+  meals: {},       
+  workouts: {},    
+  weightLog: [],   
+  waterLog: {},    
+  stepLog: {},     
+  daySplits: {},   
+  customActivities: [],
+  isCloudLoaded: false, 
 };
+
+let activeMealContext = 'breakfast';
 
 // ── Date Helpers ──
 function dateKey(d) {
@@ -393,9 +398,68 @@ function getDailyActiveCals(key) {
   return Math.round(activeTotal);
 }
 
+// ── Water Helpers ──
+function getWater(key) {
+  return APP.waterLog[key] || 0;
+}
+
+function addWater() {
+  const k = dateKey();
+  APP.waterLog[k] = (APP.waterLog[k] || 0) + 1;
+  addXP(XP_MAP.WATER_GLASS);
+  saveState();
+  updateRPG();
+  renderCurrentPage();
+}
+
+function removeWater() {
+  const k = dateKey();
+  APP.waterLog[k] = Math.max(0, (APP.waterLog[k] || 0) - 1);
+  saveState();
+  renderCurrentPage();
+}
+
 // ── Workout Helpers ──
 function getWorkouts(key) {
   return APP.workouts[key] || [];
+}
+
+function getAbTrainingDays(weeks) {
+  let count = 0;
+  const today = new Date();
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const k = dateKey(d);
+    const workouts = APP.workouts[k] || [];
+    if (workouts.some(w => w.muscle === 'abs')) {
+      count++;
+    }
+  }
+  return count;
+}
+
+function getWeeklyMuscleFrequency() {
+  const freq = {};
+  const today = new Date();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const k = dateKey(d);
+    const workouts = APP.workouts[k] || [];
+    workouts.forEach(w => {
+      if (w.muscle) {
+        freq[w.muscle] = (freq[w.muscle] || 0) + 1;
+      }
+    });
+  }
+  return freq;
+}
+
+function getDaySplit(key) {
+  const splitId = APP.daySplits ? APP.daySplits[key] : null;
+  if (!splitId) return null;
+  return MUSCLE_SPLITS.find(s => s.id === splitId) || null;
 }
 
 function addWorkoutEntry(exerciseId, sets, duration = 0) {
@@ -536,9 +600,63 @@ function getStreak() {
   return streak;
 }
 
-// Aurora Onboarding Wizard Configuration
-const WIZARD_TOTAL_STEPS = 6;
-let currentWizStep = 1;
+// ── RPG Engine ──
+function addXP(amount) {
+  if (!APP.profile.rpg) return;
+  const rpg = APP.profile.rpg;
+  rpg.xp += amount;
+  
+  const xpNeeded = rpg.level * 1000;
+  if (rpg.xp >= xpNeeded) {
+    rpg.level++;
+    rpg.xp -= xpNeeded;
+    showToast(`LEVEL UP! You are now Level ${rpg.level}`, 'success');
+  }
+}
+
+function updateRPG() {
+  if (!APP.profile.rpg) return;
+  const attrs = calcRPGAttributes();
+  APP.profile.rpg.str = attrs.str;
+  APP.profile.rpg.agi = attrs.agi;
+  APP.profile.rpg.vit = attrs.vit;
+  saveState();
+}
+
+function calcRPGAttributes() {
+  const weekDates = getWeekDates();
+  let totalVolume = 0;
+  let cardioSessions = 0;
+  let stepDays = 0;
+  let healthyMealDays = 0;
+
+  weekDates.forEach(d => {
+    const k = dateKey(d);
+    
+    // STR: Lifting Volume
+    const workouts = APP.workouts[k] || [];
+    workouts.forEach(w => {
+      if (w.sets) {
+        w.sets.forEach(s => totalVolume += (s.weight || 0) * (s.reps || 0));
+      } else if (w.muscle === 'cardio' || w.muscle === 'sports') {
+        cardioSessions++;
+      }
+    });
+
+    // AGI: Steps Consistency
+    if ((APP.stepLog[k] || 0) >= (APP.profile.stepGoal || 10000)) stepDays++;
+
+    // VIT: Nutrition Consistency
+    const totals = getDayTotals(k);
+    if (totals.protein >= (APP.targets?.protein || 100) * 0.8) healthyMealDays++;
+  });
+
+  return {
+    str: Math.min(100, Math.round(totalVolume / 500)), // 50,000kg = 100 STR
+    agi: Math.min(100, (stepDays * 10) + (cardioSessions * 5)),
+    vit: Math.min(100, (healthyMealDays * 14))
+  };
+}
 
 // ── Navigation ──
 function navigateTo(page) {
