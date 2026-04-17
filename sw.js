@@ -1,13 +1,13 @@
 // ============================================
-// FuelTrack — Service Worker (Offline Support)
+// FuelTrack — Service Worker (ULTIMATE FLUSH)
 // ============================================
 
-const CACHE_NAME = 'fueltrack-v5-final';
+const CACHE_NAME = 'fueltrack-v100-SUPERFIX';
 const ASSETS = [
   '/',
   '/index.html',
   '/style.css',
-  '/app_v5.js',
+  '/app_v5_1.js',
   '/data_v5.js',
   '/charts.js',
   '/auth.js',

@@ -267,6 +267,10 @@
       <!-- Registration Stage (Multi-Step Wizard) -->
       <div id="profileStage" class="auth-card wizard-view">
         <div class="wizard-header">
+          <div class="onboarding-footer" style="padding:0">
+            <button class="btn btn-primary" onclick="window.location.reload(true)" style="width:100%">Reload Dashboard</button>
+            <button class="btn btn-secondary btn-sm" onclick="forceNuclearReset()" style="width:100%;margin-top:var(--space-md);opacity:0.6">🔧 Emergency Repair App</button>
+          </div>
           <div class="wizard-progress">
              <div class="progress-bar" id="wizProgress" style="width: 20%"></div>
           </div>
@@ -486,7 +490,7 @@
   <script src="data_v5.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="charts.js"></script>
-  <script src="app_v5.js"></script>
+  <script src="app_v5_1.js"></script>
   <script type="module" src="auth.js"></script>
 </body>
 </html>
