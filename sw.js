@@ -2,13 +2,13 @@
 // FuelTrack — Service Worker (Offline Support)
 // ============================================
 
-const CACHE_NAME = 'fueltrack-v4';
+const CACHE_NAME = 'fueltrack-v5-final';
 const ASSETS = [
   '/',
   '/index.html',
   '/style.css',
-  '/app.js',
-  '/data.js',
+  '/app_v5.js',
+  '/data_v5.js',
   '/charts.js',
   '/auth.js',
   '/firebase-config.js',
@@ -37,7 +37,8 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-  // Network-first for ALL assets (Force update if online)
+// Fetch — Network-first for ALL assets (Force update if online)
+self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
