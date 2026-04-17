@@ -277,13 +277,21 @@ window.syncToCloud = async function(data) {
   } catch (e) { console.error("Cloud sync fail:", e); }
 };
 
-onAuthStateChanged(auth, (user) => {
+// ── Master State Handler ──
+onAuthStateChanged(auth, async (user) => {
+  const wrapper = document.getElementById('authOverlay');
   if (user) {
-    checkUserRegistration(user);
-    document.body.classList.add('is-authenticated');
+    console.log("Session detected, verifying identity...");
+    await checkUserRegistration(user);
   } else {
-    document.getElementById('authOverlay').classList.add('active');
+    // No User: Show JUST the Login Stage
+    window.isUserRegistered = false;
     document.body.classList.remove('is-authenticated');
+    if (wrapper) {
+      wrapper.style.display = 'flex';
+      wrapper.classList.add('active');
+      switchStage('profileStage', 'loginStage'); // Ensure we reset to login
+    }
   }
 });
 
