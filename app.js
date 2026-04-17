@@ -1523,8 +1523,6 @@ function saveAISettings() {
   saveState();
   showToast('Intelligence settings updated!', 'success');
 }
-  `;
-}
 
 // ── Profile Actions ──
 function saveProfile() {

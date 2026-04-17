@@ -334,19 +334,6 @@ const EXERCISE_DATABASE = [
   { id: 608, name: "Yoga", muscle: "others", equipment: "Mat", type: "duration", met: 2.5 },
 ];
 
-const MUSCLE_GROUPS = [
-  { id: 'chest', name: 'Chest', icon: '🏋️', color: '#ff4757' },
-  { id: 'back', name: 'Back', icon: '💪', color: '#2ed573' },
-  { id: 'shoulders', name: 'Shoulders', icon: '⚡', color: '#ffa502' },
-  { id: 'biceps', name: 'Biceps', icon: '💪', color: '#1e90ff' },
-  { id: 'triceps', name: 'Triceps', icon: '🔥', color: '#ff6b81' },
-  { id: 'legs', name: 'Legs', icon: '🦵', color: '#3742fa' },
-  { id: 'abs', name: 'Abs', icon: '🎯', color: '#2bcbba' },
-  { id: 'cardio', name: 'Cardio', icon: '🏃', color: '#747d8c' },
-  { id: 'sports', name: 'Sports', icon: '🏏', color: '#eccc68' },
-  { id: 'others', name: 'Others', icon: '🧘', color: '#a29bfe' }
-];
-
 const MUSCLE_SPLITS = [
   { id: 'rest', name: 'Rest / Recovery', muscles: [] },
   { id: 'push', name: 'Push (Chest/Shoulders/Tri)', muscles: ['chest', 'shoulders', 'triceps'] },
