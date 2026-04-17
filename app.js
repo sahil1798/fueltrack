@@ -1514,6 +1514,44 @@ function renderProfilePage(container) {
       </div>
     </div>
   `;
+
+  // Mobile Install Prompt Logic
+  setTimeout(() => {
+    const grid = main.querySelector('.profile-layout-grid');
+    if (!grid) return;
+
+    if (deferredPrompt) {
+      const card = document.createElement('div');
+      card.className = 'card p-md';
+      card.style.border = '1px solid var(--accent-green)';
+      card.style.background = 'rgba(0, 232, 150, 0.05)';
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;gap:var(--space-md);cursor:pointer" onclick="installApp()">
+          <div style="font-size:1.5rem">📲</div>
+          <div style="flex:1">
+            <div style="font-weight:800;color:#fff">Install Mobile App</div>
+            <div style="font-size:0.75rem;color:var(--text-secondary)">Fast, Offline-Ready & Native Feel</div>
+          </div>
+          <div class="header-level-badge">INSTALL</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    } else if (/iPhone|iPad|iPod/.test(navigator.userAgent) && !window.navigator.standalone) {
+      const card = document.createElement('div');
+      card.className = 'card p-md';
+      card.style.border = '1px solid var(--accent-blue)';
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;gap:var(--space-md)">
+          <div style="font-size:1.5rem">🍎</div>
+          <div style="flex:1">
+            <div style="font-weight:800;color:#fff">Install on iPhone</div>
+            <div style="font-size:0.75rem;color:var(--text-secondary)">Tap Share → Add to Home Screen</div>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    }
+  }, 10);
 }
 
 function saveAISettings() {
@@ -2182,6 +2220,25 @@ function resetScanner() {
   document.getElementById('visionProcessing').style.display = 'none';
   document.getElementById('visionReview').style.display = 'none';
 }
+
+// ── PWA Installation ──
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // If we are on profile page, re-render to show install button
+  if (APP.currentPage === 'profile') renderCurrentPage();
+});
+
+window.installApp = async function() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    deferredPrompt = null;
+    renderCurrentPage();
+  }
+};
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
