@@ -127,6 +127,7 @@
           <span class="search-icon">🔍</span>
           <input type="text" class="search-input" id="foodSearchInput" placeholder="Search foods... roti, chicken, dal..."
                  oninput="renderFoodSearchResults(this.value)" autocomplete="off">
+          <button class="btn-icon-scanner" onclick="openVisionScanner()" title="Snap & Log">📸</button>
         </div>
         <div class="category-chips" id="foodCategoryChips">
           <button class="category-chip active" data-category="All" onclick="filterByCategory('All', this)">All</button>
@@ -435,6 +436,48 @@
           Intensity helps us estimate calories. "High" is for competitive sports, "Low" is for light sessions.
         </div>
         <button class="btn btn-primary" onclick="submitCustomActivity()" style="width:100%;margin-top:var(--space-lg)">Create Activity</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Vision Scanner Modal -->
+  <div class="modal-overlay" id="visionModal">
+    <div class="modal-content vision-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">🤖 AI Snap & Log</h2>
+        <button class="modal-close" onclick="closeVisionScanner()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="cameraView" class="camera-container">
+          <video id="visionVideo" autoplay playsinline></video>
+          <canvas id="visionCanvas" style="display:none"></canvas>
+          <div class="camera-overlay">
+            <div class="scan-frame"></div>
+          </div>
+          <button class="btn-capture" onclick="captureAndScan()">
+            <div class="capture-inner"></div>
+          </button>
+        </div>
+        
+        <div id="visionProcessing" class="vision-status" style="display:none">
+          <div class="loader-ring"></div>
+          <p>Analyzing with Gemini AI...</p>
+        </div>
+
+        <div id="visionReview" class="vision-review" style="display:none">
+          <div class="review-header">
+            <h3 id="aiFoodName">Detected Food</h3>
+            <p>Macros analyzed by Gemini</p>
+          </div>
+          <div class="macro-review-grid">
+            <div class="mr-item"><label>Cal</label><input type="number" id="aiCal" class="form-input-sm"></div>
+            <div class="mr-item"><label>Pro</label><input type="number" id="aiPro" class="form-input-sm"></div>
+            <div class="mr-item"><label>Car</label><input type="number" id="aiCar" class="form-input-sm"></div>
+            <div class="mr-item"><label>Fat</label><input type="number" id="aiFat" class="form-input-sm"></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;margin-top:var(--space-md)" onclick="logAIResult()">Log this Meal</button>
+          <button class="btn btn-text" style="width:100%" onclick="resetScanner()">Try Again</button>
+        </div>
       </div>
     </div>
   </div>

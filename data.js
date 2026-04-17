@@ -334,7 +334,34 @@ const EXERCISE_DATABASE = [
   { id: 608, name: "Yoga", muscle: "others", equipment: "Mat", type: "duration", met: 2.5 },
 ];
 
-const DEFAULT_PROFILE = { name: "", age: null, height: null, weight: null, gender: "male", activityLevel: 1.2, goal: "", stepGoal: 10000 };
+const DEFAULT_PROFILE = { 
+  name: "", 
+  age: null, 
+  height: null, 
+  weight: null, 
+  gender: "male", 
+  activityLevel: 1.2, 
+  goal: "", 
+  stepGoal: 10000,
+  rpg: {
+    level: 1,
+    xp: 0,
+    str: 0, // Strength: Based on lifting volume
+    agi: 0, // Agility: Based on steps/cardio
+    vit: 0  // Vitality: Based on nutrition consistency
+  },
+  aiSettings: {
+    geminiKey: ""
+  }
+};
+
+const XP_MAP = {
+  MEAL_LOG: 50,
+  WORKOUT_LOG: 100,
+  STEP_GOAL_HIT: 200,
+  WATER_GLASS: 10,
+  WEIGHT_LOG: 50
+};
 
 function calcTargets(profile, activeCals = 0) {
   const bmr = profile.gender === "male"

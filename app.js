@@ -75,6 +75,10 @@ window.applyCloudData = function(data) {
   // Deep merge cloud data into local state
   Object.assign(APP, data);
   
+  // Migration for new RPG and AI settings
+  if (!APP.profile.rpg) APP.profile.rpg = { ...DEFAULT_PROFILE.rpg };
+  if (!APP.profile.aiSettings) APP.profile.aiSettings = { ...DEFAULT_PROFILE.aiSettings };
+
   // Mark as loaded to enable cloud saving
   APP.isCloudLoaded = true;
   
@@ -83,8 +87,10 @@ window.applyCloudData = function(data) {
   
   // Recalculate everything
   if (APP.profile) {
-    APP.targets = calcTargets(APP.profile);
+    APP.targets = calcTargets(APP.profile, getDailyActiveCals(dateKey()));
   }
+  
+  updateRPG();
   
   // Full UI Refresh
   if (window.renderCurrentPage) window.renderCurrentPage();
@@ -181,7 +187,10 @@ function addMealEntry(mealType, foodId, qty, customGrams) {
     fat: Math.round(food.fat * multiplier * 10) / 10,
     fiber: Math.round(food.fiber * multiplier * 10) / 10,
   });
+  
+  addXP(XP_MAP.MEAL_LOG);
   saveState();
+  updateRPG();
   renderCurrentPage();
 }
 
@@ -216,14 +225,146 @@ function getMealCals(key, mealType) {
   return m[mealType].reduce((s, e) => s + (e.calories || 0), 0);
 }
 
+// ── Smart Fuel Coach ──
+function getCoachAdvice() {
+  const k = dateKey();
+  const totals = getDayTotals(k);
+  const targets = APP.targets;
+  const remCals = targets.calories - totals.calories;
+  const remPro = targets.protein - totals.protein;
+  const hour = new Date().getHours();
+  
+  // Case 1: Over Cals
+  if (remCals < -50) {
+    return {
+      title: "Coach's Warning ⚠️",
+      text: `You've exceeded your calories by ${Math.abs(remCals)}. Keep your next meals light! Focus on volume and high-water foods (Cucumbers, Salads).`,
+      type: 'warning'
+    };
+  }
+  
+  // Case 2: Protein Deficit
+  if (remPro > 15) {
+    const suggestions = FOOD_DATABASE.filter(f => {
+      const pPer100 = f.protein;
+      const cPer100 = f.calories;
+      return (pPer100 > 15) && (cPer100 < remCals * 0.8 || remCals > 500); 
+    }).sort((a,b) => b.protein - a.protein).slice(0, 2);
+    
+    if (suggestions.length > 0) {
+      return {
+        title: "Protein Mission 🥩",
+        text: `You are ${Math.round(remPro)}g short on protein. I suggest adding ${suggestions[0].name} or ${suggestions[1]?.name || 'a Protein Shake'} to your next meal.`,
+        item: suggestions[0],
+        type: 'advice'
+      };
+    }
+  }
+  
+  // Case 3: Evening Refuel (Special logic for late in day)
+  if (hour >= 19 && remCals > 200) {
+    return {
+      title: "Nighttime Refuel 🌙",
+      text: `You still have ${remCals} calories to hit your goal. A light high-protein snack like Greek Yogurt would be perfect now.`,
+      type: 'refuel'
+    };
+  }
+
+  // Case 4: Perfect Day
+  if (Math.abs(remCals) < 100 && Math.abs(remPro) < 10) {
+    return {
+      title: "Perfect Adherence 💎",
+      text: "You are absolutely crushing your macro targets today. Stay consistent and keep this momentum!",
+      type: 'success'
+    };
+  }
+
+  return {
+    title: "Coach's Pulse 🧠",
+    text: "You're on track. Keep logging your steps and meals to stay ahead of the game.",
+    type: 'neutral'
+  };
+}
+
+// ── RPG Character Engine ──
+function addXP(amount) {
+  if (!APP.profile.rpg) APP.profile.rpg = { level: 1, xp: 0, str: 0, agi: 0, vit: 0 };
+  
+  let r = APP.profile.rpg;
+  r.xp += amount;
+  
+  // Level up logic (Level * 500 XP required)
+  const xpNeeded = r.level * 500;
+  if (r.xp >= xpNeeded) {
+    r.xp -= xpNeeded;
+    r.level++;
+    saveState();
+    showLevelUpModal(r.level);
+  } else {
+    saveState();
+  }
+}
+
+function updateRPG() {
+  if (!APP.profile.rpg) APP.profile.rpg = { level: 1, xp: 0, str: 0, agi: 0, vit: 0 };
+  
+  // Attributes calculation based on last 14 days
+  let strength = 0, agility = 0, vitality = 0;
+  const now = new Date();
+  
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const key = dateKey(d);
+    
+    // Strength: From resistance sets
+    const dailyWorkouts = APP.workouts[key] || [];
+    dailyWorkouts.forEach(w => {
+      if (w.type === 'strength' && w.sets) {
+        strength += w.sets.length;
+      }
+    });
+    
+    // Agility: From steps & cardio duration
+    const steps = APP.stepLog[key] || 0;
+    agility += Math.floor(steps / 2000);
+    dailyWorkouts.forEach(w => {
+      if (w.type === 'duration') agility += Math.floor(w.duration / 15);
+    });
+    
+    // Vitality: From water & nutrition (Simplified for now)
+    const water = APP.waterLog[key] || 0;
+    if (water >= 8) vitality += 1;
+    const totals = getDayTotals(key);
+    if (totals.protein >= (APP.targets.protein * 0.8)) vitality += 1;
+  }
+  
+  APP.profile.rpg.str = strength;
+  APP.profile.rpg.agi = agility;
+  APP.profile.rpg.vit = Math.floor(vitality / 2); // Normalize
+}
+
+function showLevelUpModal(level) {
+  showToast(`🎊 LEVEL UP! You are now Level ${level}!`, 'success');
+  // Add fancy cinematic effect here later if needed
+}
+
 // ── Step Tracking ──
 function getSteps(key) { return APP.stepLog[key] || 0; }
 
 function addSteps(count) {
   const k = dateKey();
+  const wasUnderGoal = getSteps(k) < (APP.profile.stepGoal || 10000);
+  
   APP.stepLog[k] = (APP.stepLog[k] || 0) + count;
+  
+  if (wasUnderGoal && APP.stepLog[k] >= (APP.profile.stepGoal || 10000)) {
+    addXP(XP_MAP.STEP_GOAL_HIT);
+  }
+  
   saveState();
   APP.targets = calcTargets(APP.profile, getDailyActiveCals(k));
+  updateRPG();
   renderCurrentPage();
 }
 
@@ -285,8 +426,10 @@ function addWorkoutEntry(exerciseId, sets, duration = 0) {
     caloriesBurned
   });
   
+  addXP(XP_MAP.WORKOUT_LOG);
   saveState();
   APP.targets = calcTargets(APP.profile, getDailyActiveCals(key));
+  updateRPG();
   renderCurrentPage();
 }
 
@@ -348,8 +491,21 @@ function getTotalVolume(key) {
 
 // ── Water ──
 function getWater(key) { return APP.waterLog[key] || 0; }
-function addWater() { const k = dateKey(); APP.waterLog[k] = (APP.waterLog[k] || 0) + 1; saveState(); renderCurrentPage(); }
-function removeWater() { const k = dateKey(); APP.waterLog[k] = Math.max(0, (APP.waterLog[k] || 0) - 1); saveState(); renderCurrentPage(); }
+function addWater() { 
+  const k = dateKey(); 
+  APP.waterLog[k] = (APP.waterLog[k] || 0) + 1; 
+  addXP(XP_MAP.WATER_GLASS);
+  saveState(); 
+  updateRPG();
+  renderCurrentPage(); 
+}
+
+function removeWater() { 
+  const k = dateKey(); 
+  APP.waterLog[k] = Math.max(0, (APP.waterLog[k] || 0) - 1); 
+  saveState(); 
+  renderCurrentPage(); 
+}
 
 // ── Weight Log ──
 function addWeightEntry(weight) {
@@ -358,7 +514,10 @@ function addWeightEntry(weight) {
   if (existing >= 0) APP.weightLog[existing].weight = weight;
   else APP.weightLog.push({ date: key, weight });
   APP.weightLog.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  addXP(XP_MAP.WEIGHT_LOG);
   saveState();
+  updateRPG();
   renderCurrentPage();
 }
 
@@ -421,6 +580,7 @@ function renderDashboard(container) {
   const key = dateKey();
   const totals = getDayTotals(key);
   const t = APP.targets;
+  const advice = getCoachAdvice();
   const dayWorkouts = getWorkouts(key);
   const volume = getTotalVolume(key);
   const water = getWater(key);
@@ -432,7 +592,10 @@ function renderDashboard(container) {
   container.innerHTML = `
     <div class="page-header">
       <div class="page-header-left">
-        <h1>Dashboard</h1>
+        <div style="display:flex;align-items:center;gap:var(--space-md)">
+          <h1>Dashboard</h1>
+          <div class="header-level-badge">LVL ${APP.profile.rpg?.level || 1}</div>
+        </div>
         <p class="page-subtitle">Your daily nutrition & training overview</p>
       </div>
       <div class="header-date-nav">
@@ -471,6 +634,22 @@ function renderDashboard(container) {
     </div>
 
     <div class="dashboard-grid">
+      <!-- Coach's Corner -->
+      <div class="card coach-hub">
+        <div class="card-shine"></div>
+        <div class="card-header">
+          <span class="card-title">Coach's Corner</span>
+          <span class="card-icon">🧠</span>
+        </div>
+        <div class="coach-advice-box ${advice.type}">
+          <div class="coach-advice-title">${advice.title}</div>
+          <div class="coach-advice-text">${advice.text}</div>
+          ${advice.item ? `
+            <button class="btn btn-secondary btn-sm mt-md" style="width:100%" onclick="applyCoachSuggestion('${advice.item.name}')">Add Recommended Food</button>
+          ` : ''}
+        </div>
+      </div>
+
       <!-- Calorie Ring + Today's Workout -->
       <div class="card">
         <div class="card-shine"></div>
@@ -636,6 +815,12 @@ function renderDashboard(container) {
   setTimeout(() => {
     renderCalorieRing(totals.calories, t.calories);
     renderMacroDonut(totals.protein, totals.carbs, totals.fat);
+    
+    // Proactive Coach Notifications
+    if (advice.type === 'refuel' || advice.type === 'warning') {
+      showToast(`${advice.title}: ${advice.text}`, advice.type === 'warning' ? 'error' : 'info');
+    }
+    
     // Weekly trend
     const weekData = [];
     for (let i = 6; i >= 0; i--) {
@@ -647,6 +832,16 @@ function renderDashboard(container) {
     }
     renderWeeklyTrend(weekData, t.calories);
   }, 50);
+}
+
+function applyCoachSuggestion(foodName) {
+  activeMealContext = 'evening'; // Switch to evening context for refuels
+  openAddFoodModal('evening'); 
+  const input = document.getElementById('foodSearchInput');
+  if (input) {
+    input.value = foodName;
+    renderFoodSearchResults(foodName);
+  }
 }
 
 // ── Meals Page ──
@@ -1012,25 +1207,52 @@ function renderProgressPage(container) {
 function renderProfilePage(container) {
   const p = APP.profile;
   const t = APP.targets;
+  const r = p.rpg || { level: 1, xp: 0, str: 0, agi: 0, vit: 0 };
+  const xpNeeded = r.level * 500;
+  const xpPercent = Math.min(100, (r.xp / xpNeeded) * 100);
 
   container.innerHTML = `
     <div class="page-header">
       <div class="page-header-left">
-        <h1>Profile & Targets</h1>
-        <p class="page-subtitle">Your body stats and calculated macro targets</p>
+        <h1>Profile</h1>
+        <p class="page-subtitle">Character Sheet & Performance Settings</p>
       </div>
     </div>
 
-    <div class="dashboard-grid">
+    <!-- RPG Avatar Banner -->
+    <div class="card avatar-banner mb-lg">
+      <div class="avatar-content">
+        <div class="avatar-main">
+          <div class="avatar-circle">
+            <span class="avatar-level-label">LVL</span>
+            <span class="avatar-level-val">${r.level}</span>
+          </div>
+          <div class="avatar-details">
+            <h2 class="avatar-name">${p.name || 'FuelTrack Athlete'}</h2>
+            <div class="xp-container">
+              <div class="xp-text">XP: ${r.xp} / ${xpNeeded}</div>
+              <div class="xp-bar"><div class="xp-fill" style="width: ${xpPercent}%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="avatar-stats">
+          <div class="stat-pill str"><span class="stat-icon">⚔️</span> STR <strong>${r.str}</strong></div>
+          <div class="stat-pill agi"><span class="stat-icon">⚡</span> AGI <strong>${r.agi}</strong></div>
+          <div class="stat-pill vit"><span class="stat-icon">❤️</span> VIT <strong>${r.vit}</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-layout-grid">
       <div class="card">
         <div class="card-shine"></div>
         <div class="card-header">
-          <span class="card-title">Body Stats</span>
+          <span class="card-title">Base Identity</span>
           <span class="card-icon">👤</span>
         </div>
         <div class="form-group">
-          <label class="form-label">Name</label>
-          <input class="form-input" id="profName" value="${p.name || p.displayName || ''}">
+          <label class="form-label">Display Name</label>
+          <input class="form-input" id="profName" value="${p.name || ''}">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md)">
           <div class="form-group">
@@ -1052,44 +1274,50 @@ function renderProfilePage(container) {
             <label class="form-label">Weight (kg)</label>
             <input class="form-input" type="number" step="0.1" id="profWeight" value="${p.weight}">
           </div>
+          <div class="form-group">
+            <label class="form-label">Activity Level</label>
+            <select class="form-select" id="profActivity">
+              <option value="1.2" ${p.activityLevel === 1.2 ? 'selected' : ''}>Sedentary</option>
+              <option value="1.375" ${p.activityLevel === 1.375 ? 'selected' : ''}>Lightly Active</option>
+              <option value="1.55" ${p.activityLevel === 1.55 ? 'selected' : ''}>Moderately Active</option>
+              <option value="1.725" ${p.activityLevel === 1.725 ? 'selected' : ''}>Very Active</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Step Goal</label>
+            <input class="form-input" type="number" id="profStepGoal" value="${p.stepGoal || 10000}">
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Activity Level</label>
-          <select class="form-select" id="profActivity">
-            <option value="1.2" ${p.activityLevel === 1.2 ? 'selected' : ''}>Sedentary (desk job)</option>
-            <option value="1.375" ${p.activityLevel === 1.375 ? 'selected' : ''}>Light (1-3 days/week)</option>
-            <option value="1.55" ${p.activityLevel === 1.55 ? 'selected' : ''}>Moderate (3-5 days/week)</option>
-            <option value="1.65" ${p.activityLevel === 1.65 ? 'selected' : ''}>Active (5-6 days/week)</option>
-            <option value="1.725" ${p.activityLevel === 1.725 ? 'selected' : ''}>Very Active (6-7 days/week)</option>
-            <option value="1.9" ${p.activityLevel === 1.9 ? 'selected' : ''}>Athlete (2x/day)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Goal</label>
+          <label class="form-label">Primary Goal</label>
           <select class="form-select" id="profGoal">
-            <option value="cut" ${p.goal === 'cut' ? 'selected' : ''}>🔥 Cut (Lose Fat — Get Abs!)</option>
+            <option value="cut" ${p.goal === 'cut' ? 'selected' : ''}>🔥 Cut (Lose Fat)</option>
             <option value="maintain" ${p.goal === 'maintain' ? 'selected' : ''}>⚖️ Maintain</option>
             <option value="bulk" ${p.goal === 'bulk' ? 'selected' : ''}>💪 Bulk (Gain Muscle)</option>
           </select>
         </div>
-        <button class="btn btn-primary" onclick="saveProfile()" id="btnSaveProfile" style="width:100%;margin-top:var(--space-sm)">Save Profile</button>
+        <button class="btn btn-primary" onclick="saveProfile()" style="width:100%;margin-top:var(--space-sm)">Save Persona</button>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:var(--space-md)">
         <div class="card">
           <div class="card-shine"></div>
-          <div class="card-header">
-            <span class="card-title">Calculated Targets</span>
-            <span class="card-icon">🎯</span>
+          <div class="card-header"><span class="card-title">Intelligence Hub</span><span class="card-icon">🧠</span></div>
+          <div class="form-group">
+            <label class="form-label">Gemini API Key</label>
+            <input class="form-input font-mono" style="font-size:0.75rem" type="password" id="profGeminiKey" 
+                   value="${p.aiSettings?.geminiKey || ''}" placeholder="Paste Gemini API Key...">
           </div>
+          <button class="btn btn-secondary btn-sm" onclick="saveAISettings()">Save AI Settings</button>
+        </div>
+
+        <div class="card">
+          <div class="card-shine"></div>
+          <div class="card-header"><span class="card-title">Targets</span><span class="card-icon">🎯</span></div>
           <div class="profile-grid">
             <div class="profile-stat">
               <div class="profile-stat-value">${t.bmr}</div>
-              <div class="profile-stat-label">BMR (cal)</div>
-            </div>
-            <div class="profile-stat">
-              <div class="profile-stat-value">${t.tdee}</div>
-              <div class="profile-stat-label">TDEE (cal)</div>
+              <div class="profile-stat-label">BMR</div>
             </div>
             <div class="profile-stat">
               <div class="profile-stat-value" style="color:var(--accent-green)">${t.calories}</div>
@@ -1099,31 +1327,29 @@ function renderProfilePage(container) {
               <div class="profile-stat-value" style="color:var(--accent-blue)">${t.protein}g</div>
               <div class="profile-stat-label">Protein</div>
             </div>
-            <div class="profile-stat">
-              <div class="profile-stat-value" style="color:var(--accent-orange)">${t.carbs}g</div>
-              <div class="profile-stat-label">Carbs</div>
-            </div>
-            <div class="profile-stat">
-              <div class="profile-stat-value" style="color:var(--accent-purple)">${t.fat}g</div>
-              <div class="profile-stat-label">Fat</div>
-            </div>
           </div>
         </div>
-
+        
         <div class="card">
           <div class="card-shine"></div>
-          <div class="card-header">
-            <span class="card-title">Data Management</span>
-            <span class="card-icon">💾</span>
-          </div>
+          <div class="card-header"><span class="card-title">Data Control</span><span class="card-icon">💾</span></div>
           <div style="display:flex;flex-direction:column;gap:var(--space-sm)">
-            <button class="btn btn-secondary" onclick="exportData()" id="btnExport">📦 Export Data</button>
-            <label class="btn btn-secondary" style="cursor:pointer" id="btnImport">📥 Import Data<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
-            <button class="btn btn-danger" onclick="clearAllData()" id="btnClearData">🗑️ Clear All Data</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportData()">📦 Export JSON</button>
+            <button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ Reset Project</button>
           </div>
         </div>
       </div>
     </div>
+  `;
+}
+
+function saveAISettings() {
+  const key = document.getElementById('profGeminiKey').value.trim();
+  if (!APP.profile.aiSettings) APP.profile.aiSettings = {};
+  APP.profile.aiSettings.geminiKey = key;
+  saveState();
+  showToast('Intelligence settings updated!', 'success');
+}
   `;
 }
 
@@ -1136,10 +1362,13 @@ function saveProfile() {
   APP.profile.weight = parseFloat(document.getElementById('profWeight').value) || 67;
   APP.profile.activityLevel = parseFloat(document.getElementById('profActivity').value) || 1.65;
   APP.profile.goal = document.getElementById('profGoal').value;
-  APP.targets = calcTargets(APP.profile);
+  APP.profile.stepGoal = parseInt(document.getElementById('profStepGoal').value) || 10000;
+  
+  APP.targets = calcTargets(APP.profile, getDailyActiveCals(dateKey()));
   saveState();
+  updateRPG();
   renderCurrentPage();
-  showToast('Profile saved! Targets recalculated.', 'success');
+  showToast('Persona saved & updated!', 'success');
 }
 
 function logWeight() {
@@ -1646,6 +1875,141 @@ function submitCustomActivity() {
   const id = addCustomActivity(name, intensity);
   closeCustomActivityModal();
   openSetLogger(id); // Immediately open logger for the new activity
+}
+
+// ── AI Vision Scanner (Snap & Log) ──
+let visionStream = null;
+
+async function openVisionScanner() {
+  closeAddFoodModal();
+  document.getElementById('visionModal').classList.add('active');
+  document.getElementById('cameraView').style.display = 'block';
+  document.getElementById('visionProcessing').style.display = 'none';
+  document.getElementById('visionReview').style.display = 'none';
+
+  try {
+    visionStream = await navigator.mediaDevices.getUserMedia({ 
+      video: { facingMode: 'environment' } 
+    });
+    const video = document.getElementById('visionVideo');
+    video.srcObject = visionStream;
+    video.play();
+  } catch (err) {
+    showToast('Camera access denied or unavailable', 'error');
+    closeVisionScanner();
+  }
+}
+
+function closeVisionScanner() {
+  if (visionStream) {
+    visionStream.getTracks().forEach(t => t.stop());
+    visionStream = null;
+  }
+  document.getElementById('visionModal').classList.remove('active');
+}
+
+async function captureAndScan() {
+  const video = document.getElementById('visionVideo');
+  const canvas = document.getElementById('visionCanvas');
+  const context = canvas.getContext('2d');
+  
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  const base64Image = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+  
+  document.getElementById('cameraView').style.display = 'none';
+  document.getElementById('visionProcessing').style.display = 'flex';
+  
+  await processImageWithAI(base64Image);
+}
+
+async function processImageWithAI(base64Data) {
+  const apiKey = APP.profile.aiSettings?.geminiKey;
+  if (!apiKey) {
+    showToast('Please add your Gemini API Key in Profile Settings', 'error');
+    resetScanner();
+    return;
+  }
+
+  const prompt = `Analyze this food image. Provide a precise nutrition estimate in JSON format. 
+  Include: foodName, calories, protein, carbs, fat, fiber. 
+  Return ONLY the JSON object. Example: {"foodName": "Avocado Toast", "calories": 350, "protein": 12, "carbs": 40, "fat": 15, "fiber": 8}`;
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: prompt },
+            { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    // Clean JSON from potential markdown markers
+    const jsonStr = text.replace(/```json|```/g, "").trim();
+    const result = JSON.parse(jsonStr);
+    
+    showVisionReview(result);
+  } catch (err) {
+    console.error("AI Error:", err);
+    showToast('AI analysis failed. Check your API key or connection.', 'error');
+    resetScanner();
+  }
+}
+
+function showVisionReview(res) {
+  document.getElementById('visionProcessing').style.display = 'none';
+  document.getElementById('visionReview').style.display = 'block';
+  
+  document.getElementById('aiFoodName').textContent = res.foodName || 'Detected Food';
+  document.getElementById('aiCal').value = res.calories || 0;
+  document.getElementById('aiPro').value = res.protein || 0;
+  document.getElementById('aiCar').value = res.carbs || 0;
+  document.getElementById('aiFat').value = res.fat || 0;
+}
+
+function logAIResult() {
+  const name = document.getElementById('aiFoodName').textContent;
+  const cal = parseInt(document.getElementById('aiCal').value);
+  const pro = parseFloat(document.getElementById('aiPro').value);
+  const car = parseFloat(document.getElementById('aiCar').value);
+  const fat = parseFloat(document.getElementById('aiFat').value);
+  
+  const key = dateKey();
+  if (!APP.meals[key]) APP.meals[key] = { breakfast: [], lunch: [], evening: [], dinner: [], snacks: [] };
+  
+  APP.meals[key][activeMealContext].push({
+    id: Date.now() + Math.random(),
+    name: `🤖 ${name}`,
+    servingLabel: "AI Scan",
+    calories: cal,
+    protein: pro,
+    carbs: car,
+    fat: fat,
+    fiber: 0
+  });
+  
+  addXP(XP_MAP.MEAL_LOG * 2); // Bonus XP for using AI!
+  saveState();
+  updateRPG();
+  closeVisionScanner();
+  renderCurrentPage();
+  showToast('AI Meal logged! +100 XP', 'success');
+}
+
+function resetScanner() {
+  document.getElementById('cameraView').style.display = 'block';
+  document.getElementById('visionProcessing').style.display = 'none';
+  document.getElementById('visionReview').style.display = 'none';
 }
 
 // ── Init ──

@@ -2352,3 +2352,340 @@ body {
   border-color: var(--accent-green);
   color: #fff;
 }
+
+/* ── Phase 11: RPG Character Sheet ── */
+
+.avatar-banner {
+  background: linear-gradient(135deg, rgba(0, 232, 150, 0.1), rgba(2, 132, 199, 0.1)), var(--bg-glass);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-main {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  background: var(--bg-glass);
+  border: 4px solid var(--accent-green);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 232, 150, 0.3);
+}
+
+.avatar-level-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent-green);
+  margin-bottom: -4px;
+}
+
+.avatar-level-val {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  font-family: 'JetBrains Mono';
+}
+
+.avatar-details {
+  flex: 1;
+}
+
+.avatar-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  color: #fff;
+}
+
+.xp-container {
+  margin-top: 8px;
+  max-width: 250px;
+}
+
+.xp-text {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.xp-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-green), #00ffaa);
+  transition: width 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.avatar-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+.stat-pill strong {
+  color: #fff;
+  font-family: 'JetBrains Mono';
+}
+
+.stat-pill.str { border-color: rgba(239, 68, 68, 0.3); }
+.stat-pill.agi { border-color: rgba(14, 165, 233, 0.3); }
+.stat-pill.vit { border-color: rgba(0, 232, 150, 0.3); }
+
+.stat-pill.str .stat-icon { color: var(--accent-red); }
+.stat-pill.agi .stat-icon { color: var(--accent-blue); }
+.stat-pill.vit .stat-icon { color: var(--accent-green); }
+
+.header-level-badge {
+  background: rgba(0, 232, 150, 0.1);
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-family: 'JetBrains Mono';
+  box-shadow: 0 0 10px rgba(0, 232, 150, 0.2);
+}
+
+.profile-layout-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-lg);
+}
+
+/* ── Phase 12: Smart Fuel Coach ── */
+
+.coach-hub {
+  background: var(--bg-glass) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.coach-advice-box {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.coach-advice-box.warning {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.coach-advice-box.advice {
+  background: rgba(14, 165, 233, 0.05);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+.coach-advice-box.refuel {
+  background: rgba(168, 85, 247, 0.05);
+  border-color: rgba(168, 85, 247, 0.2);
+}
+.coach-advice-box.success {
+  background: rgba(0, 232, 150, 0.05);
+  border-color: rgba(0, 232, 150, 0.2);
+}
+.coach-advice-box.neutral {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.coach-advice-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.coach-advice-box.warning .coach-advice-title { color: var(--accent-red); }
+.coach-advice-box.advice .coach-advice-title { color: var(--accent-blue); }
+.coach-advice-box.refuel .coach-advice-title { color: var(--accent-purple); }
+.coach-advice-box.success .coach-advice-title { color: var(--accent-green); }
+
+.coach-advice-text {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* ── Phase 13: AI Vision Scanner ── */
+
+.btn-icon-scanner {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-glass);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  z-index: 5;
+}
+
+.btn-icon-scanner:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-green);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.vision-modal {
+  max-width: 500px !important;
+  background: #000 !important;
+  border: 1px solid rgba(0, 232, 150, 0.2) !important;
+}
+
+.camera-container {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: #111;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: var(--space-md);
+}
+
+#visionVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.scan-frame {
+  width: 70%;
+  height: 50%;
+  border: 2px solid rgba(0, 232, 150, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.4);
+}
+
+.btn-capture {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.capture-inner {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.btn-capture:hover { transform: translateX(-50%) scale(1.1); }
+.btn-capture:active .capture-inner { transform: scale(0.9); }
+
+.vision-status {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  text-align: center;
+}
+
+.loader-ring {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(0, 232, 150, 0.2);
+  border-top-color: var(--accent-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.vision-review {
+  background: var(--bg-glass);
+  padding: var(--space-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-header {
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.review-header h3 { font-size: 1.4rem; margin-bottom: 4px; color: #fff; }
+.review-header p { font-size: 0.8rem; color: var(--text-muted); }
+
+.macro-review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.mr-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mr-item label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+.form-input-sm {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-family: 'JetBrains Mono';
+  font-size: 1rem;
+}
