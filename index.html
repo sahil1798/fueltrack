@@ -492,5 +492,24 @@
   <script src="charts.js"></script>
   <script src="app_v5_1.js"></script>
   <script type="module" src="auth.js"></script>
+
+  <script>
+    // ── Global Ignition Pulse ──
+    setTimeout(() => {
+      const main = document.getElementById('mainContent');
+      if (main && main.innerHTML.trim() === "" || main.innerHTML.includes("Setting up your engine")) {
+        console.warn("Dashboard ignition delayed. Showing manual rescue...");
+        const rescue = document.createElement('div');
+        rescue.style = "position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;";
+        rescue.innerHTML = `
+          <button class="btn btn-primary" onclick="window.navigateTo ? window.navigateTo('dashboard') : location.reload()" 
+                  style="box-shadow:0 0 30px rgba(0,232,150,0.5);border:2px solid #fff">
+            🚀 Re-Ignite Dashboard
+          </button>
+        `;
+        document.body.appendChild(rescue);
+      }
+    }, 4000);
+  </script>
 </body>
 </html>

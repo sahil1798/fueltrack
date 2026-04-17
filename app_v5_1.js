@@ -2243,7 +2243,7 @@ window.installApp = async function() {
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
-  // navigateTo('dashboard'); <-- Removed to prevent auto-loading before Auth
+  window.isAppEngineReady = true;
 
   // Register service worker
   if ('serviceWorker' in navigator) {

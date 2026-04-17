@@ -71,7 +71,7 @@ async function checkUserRegistration(user) {
   if (userDoc.exists()) {
     hideAuth();
     loadUserData(user.uid);
-    if (window.navigateTo) window.navigateTo('dashboard');
+    safeNavigate('dashboard');
   } else {
     // Start Cinematic Onboarding
     switchStage('loginStage', 'profileStage');
@@ -204,7 +204,7 @@ window.completeRegistration = async function() {
     alert("Onboarding complete! Welcome, " + profile.name);
     hideAuth();
     loadUserData(uid);
-    if (window.navigateTo) window.navigateTo('dashboard');
+    safeNavigate('dashboard');
   } catch (error) {
     console.error("Registration failed:", error);
     alert(error.message);
@@ -275,3 +275,12 @@ onAuthStateChanged(auth, (user) => {
     document.body.classList.remove('is-authenticated');
   }
 });
+
+function safeNavigate(page) {
+  if (window.navigateTo) {
+    window.navigateTo(page);
+  } else {
+    console.log("App engine not ready, retrying navigation in 100ms...");
+    setTimeout(() => safeNavigate(page), 100);
+  }
+}
