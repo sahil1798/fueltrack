@@ -2221,24 +2221,6 @@ function resetScanner() {
   document.getElementById('visionReview').style.display = 'none';
 }
 
-// ── PWA Installation ──
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  // If we are on profile page, re-render to show install button
-  if (APP.currentPage === 'profile') renderCurrentPage();
-});
-
-window.installApp = async function() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    deferredPrompt = null;
-    renderCurrentPage();
-  }
-};
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
