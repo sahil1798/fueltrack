@@ -2,6 +2,35 @@
 // NUTRITION + WORKOUT TRACKER — Core App
 // ============================================
 
+// ── Global Rescue Handler (Prevents Black Screen) ──
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+  console.error("CRITICAL APP ERROR:", msg, "at", url, ":", lineNo);
+  const main = document.getElementById('mainContent');
+  if (main) {
+    main.innerHTML = `
+      <div class="card p-xl" style="text-align:center;background:rgba(255,100,100,0.05);border:1px solid rgba(255,100,100,0.2)">
+        <div style="font-size:3.5rem;margin-bottom:1rem">🛰️</div>
+        <h2 style="color:#ff4757">System Anomaly Detected</h2>
+        <p style="margin-bottom:var(--space-lg)">A technical error occurred while rendering the dashboard. Don't worry, your data is safe.</p>
+        <button class="btn btn-primary" onclick="forceNuclearReset()">Repair & Refresh App</button>
+        <p style="margin-top:var(--space-md);font-size:0.8rem;opacity:0.6;font-family:monospace">${msg}</p>
+      </div>
+    `;
+  }
+  return false;
+};
+
+window.forceNuclearReset = async function() {
+  if (confirm("This will repair the app by clearing the local cache and reloading. Confirm?")) {
+    localStorage.clear();
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for(let registration of regs) {
+      await registration.unregister();
+    }
+    location.reload(true);
+  }
+};
+
 // ── State ──
 const APP = {
   currentPage: 'dashboard',

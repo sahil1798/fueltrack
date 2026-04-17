@@ -2,7 +2,7 @@
 // FuelTrack — Service Worker (Offline Support)
 // ============================================
 
-const CACHE_NAME = 'fueltrack-v3';
+const CACHE_NAME = 'fueltrack-v4';
 const ASSETS = [
   '/',
   '/index.html',
@@ -12,9 +12,7 @@ const ASSETS = [
   '/charts.js',
   '/auth.js',
   '/firebase-config.js',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/manifest.json'
 ];
 
 // Install — cache core assets
@@ -39,32 +37,14 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch — cache-first for local assets, network-first for CDN
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  
-  // Network-first for CDN resources (Chart.js)
-  if (url.hostname !== location.hostname) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Cache-first for local assets
+  // Network-first for ALL assets (Force update if online)
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
+    fetch(event.request)
+      .then((response) => {
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
-      });
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
